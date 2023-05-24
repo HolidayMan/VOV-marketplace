@@ -1,9 +1,11 @@
 from starlette.responses import Response
+from starlette.requests import Request
 
 from settings import TEMPLATE_RENDERER
 
 
-def render(template_name: str, context: dict) -> Response:
+def render(request: Request, template_name: str, context: dict) -> Response:
+    context.update({"request": request})
     return TEMPLATE_RENDERER.TemplateResponse(template_name, context)
 
 
