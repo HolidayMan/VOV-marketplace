@@ -1,16 +1,14 @@
 import os
 
 from money import Money
-from decimal import Decimal
 from repositories.catalog_repository import CatalogRepository
 from domain.product import Category, Product, ProductData
-from settings import DEFAULT_FILE_STORAGE
 
 
 class FakeCatalogRepository(CatalogRepository):
     products_food = [
         Product(
-            price=Decimal("9.50"),
+            price=Money(5, "USD"),
             id=1,
             shop_id=1,
             product_data=ProductData(**{
@@ -25,7 +23,7 @@ class FakeCatalogRepository(CatalogRepository):
 
     products_tools = [
         Product(
-            price=Decimal("15.50"),
+            price=Money(15, "USD"),
             id=2,
             shop_id=2,
             product_data=ProductData(**{
