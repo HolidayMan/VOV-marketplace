@@ -4,16 +4,17 @@ from repositories.fake_catalog_repository import FakeCatalogRepository
 
 
 class CatalogService:
-    __repository__: CatalogRepository = None
+
+    _repository: CatalogRepository = None
 
     def __init__(self, repository: CatalogRepository):
-        self.__repository__ = repository
+        self._repository = repository
 
     def get_catalog_items(self, category_name: str | None) -> list[Product]:
         if category_name is not None:
-            return self.__repository__.get_catalog_items_with_category(category_name)
+            return self._repository.get_catalog_items_with_category(category_name)
         else:
-            return self.__repository__.get_catalog_items()
+            return self._repository.get_catalog_items()
 
     def get_categories(self) -> list[Category]:
-        return self.__repository__.get_categories()
+        return self._repository.get_categories()
