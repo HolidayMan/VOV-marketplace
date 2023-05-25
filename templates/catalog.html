@@ -1,4 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>{{ some_variable }}</h2>
+    {% for product in products_list %}
+    <div class="catalog_row">
+        <div class="product_image">
+            <img src="{{ product.product_data.image_file_path }}" alt="Product image">
+        </div>
+        <div class="product_title">
+            <h2>{{ product.product_data.name }}</h2>
+        </div>
+        <div class="product_description">
+            <p>{{ product.product_data.description }}</p>
+        </div>
+    </div>
+    {% endfor %}
 {% endblock %}
