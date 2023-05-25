@@ -15,7 +15,7 @@ class FakeCatalogRepository(CatalogRepository):
                 "id": 1,
                 "name": "Apple",
                 "description": "Very tasty",
-                "image_file_path": "/media/apple.jpg",
+                "image_file_path": "/apple.jpg",
                 "approved": True
             })
         )
@@ -30,7 +30,7 @@ class FakeCatalogRepository(CatalogRepository):
                 "id": 2,
                 "name": "Screwdriver",
                 "description": "Very screw",
-                "image_file_path":  "/media/screwdriver.png",
+                "image_file_path":  "/screwdriver.png",
                 "approved": True
             })
         )

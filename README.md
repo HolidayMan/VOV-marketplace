@@ -41,8 +41,16 @@ uvicorn main:app --reload
 TODO
 
 ## Filters
-**make_static** - adds the static path to the file
 
-Example: {{ 'images/image.png'|make_static }} 
+### make_static
+Adds the static path to the file
+
+Example: `{{ 'images/image.png'|make_static }}`
+
+
+### make_media
+Adds the media path to the file
+
+Example: `{{ '/images/image.png'|make_media }}`
 
 

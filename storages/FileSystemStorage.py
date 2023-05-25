@@ -16,8 +16,7 @@ class FileSystemStorage:
     def exists(self, filename):
         return os.path.exists(os.path.join(self.path, filename))
 
-    def list(self):
-        return os.listdir(self.path)
-
     def url(self, filename):
+        if filename.startswith('/'):
+            filename = filename[1:]
         return os.path.join(self.base_url, filename)

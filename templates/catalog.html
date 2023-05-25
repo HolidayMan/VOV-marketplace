@@ -3,7 +3,7 @@
     {% for product in products_list %}
     <div class="catalog_row">
         <div class="product_image">
-            <img src="{{ product.product_data.image_file_path }}" alt="Product image">
+            <img src="{{ product.product_data.image_file_path|make_media }}" alt="Product image">
         </div>
         <div class="product_title">
             <h2>{{ product.product_data.name }}</h2>
