@@ -36,3 +36,13 @@ docker-compose up -d
 uvicorn main:app --reload
 ```
 
+
+## Project structure
+TODO
+
+## Filters
+**make_static** - adds the static path to the file
+
+Example: {{ 'images/image.png'|make_static }} 
+
+
