@@ -1,16 +1,18 @@
 from pydantic import BaseModel
 from domain.types import PositiveInt, Email
+from enum import Enum
 
 
-class UserRole(BaseModel):
-    id: PositiveInt | None = None
-    name: str | None = None
+class UserRole(Enum):
+    CUSTOMER = "customer"
+    SELLER = "seller"
+    MODERATOR = "moderator"
 
 
 class User(BaseModel):
-    id: PositiveInt | None = None
-    name: str | None = None
-    email: Email | None = None
-    user_role: UserRole | None = None
+    id: PositiveInt
+    name: str
+    email: Email
+    user_role: UserRole
 
 
