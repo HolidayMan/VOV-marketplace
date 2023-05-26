@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from domain.product import Product
-from domain.types import PositiveInt
+from pydantic.types import PositiveInt
 
 
 class CartItem(BaseModel):

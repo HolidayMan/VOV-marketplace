@@ -1,7 +1,7 @@
 from decimal import *
 
 from pydantic import BaseModel
-from domain.types import PositiveInt
+from pydantic.types import PositiveInt
 from money import Money
 
 

@@ -29,7 +29,7 @@ def fake_get_user(x_token: Annotated[str, Header()] = None) -> User | None:
 
 
 def fake_get_user_role(user: User = Depends(fake_get_user)) -> UserRole:
-    return user.user_role
+    return user.role
 
 
 def fake_verify_customer(user=Depends(fake_get_user)) -> User:
