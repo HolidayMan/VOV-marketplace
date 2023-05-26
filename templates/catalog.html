@@ -1,16 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% for product in products_list %}
-    <div class="catalog_row">
-        <div class="product_image">
-            <img src="{{ product.product_data.image_file_path|make_media }}" alt="Product image">
+        <div class="container">
+        <div class="catalog_category_selection">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select category
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/catalog/">All categories</a></li>
+                    {% for category in category_list %}
+                        <li><a class="dropdown-item" href="{{ '/catalog/?category=%s'%category.name }}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-        <div class="product_title">
-            <h2>{{ product.product_data.name }}</h2>
+        {% for product in products_list %}
+        <div class="catalog_row row">
+            <hr>
+            <div class="product_image col-sm">
+                <img src="{{ product.product_data.image_file_path|make_media }}" alt="Product image">
+            </div>
+            <div class="product_info col-sm" >
+                <div class="product_title">
+                    <h2>{{ product.product_data.name }}</h2>
+                </div>
+                <div class="product_description">
+                    <p>{{ product.product_data.description }}</p>
+                </div>
+                <div class="product_price">
+                    <p>Price: {{ product.price }}</p>
+                </div>
+            </div>
+            <div class="product_actions col-sm">
+                <button type="button" class="btn btn-success">Add to cart</button>
+            </div>
         </div>
-        <div class="product_description">
-            <p>{{ product.product_data.description }}</p>
-        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% endblock %}
