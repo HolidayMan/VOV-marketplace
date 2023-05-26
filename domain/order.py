@@ -3,36 +3,38 @@ from pydantic import BaseModel
 from datetime import datetime
 from domain.product import Product
 from domain.types import PositiveInt
+from enum import Enum
 
 
-class OrderItemStatus(BaseModel):
-    id: PositiveInt | None = None,
-    name: str | None = None
+class OrderItemStatus(Enum):
+    IN_PROCESS = "in_process"
+    ACCEPTED = "accepted"
+    DECLINED = "declined"
 
 
 class OrderItem(BaseModel):
     refuse_reason: str | None = None
-    product: Product | None = None
-    price: Money | None = None
-    creation_date: datetime | None = None
+    product: Product
+    price: Money
+    creation_date: datetime
     check_date: datetime | None = None
-    status: OrderItemStatus | None = None
-    count: PositiveInt | None = None
+    status: OrderItemStatus
+    count: PositiveInt
 
     class Config:
         arbitrary_types_allowed = True
 
 
-class OrderStatus(BaseModel):
-    id: PositiveInt | None = None
-    name: str | None = None
+class OrderStatus(Enum):
+    IN_PROCESS = "in_process"
+    CLOSED = "closed"
 
 
 class Order(BaseModel):
-    user_id: PositiveInt | None = None
-    id: PositiveInt | None = None
-    order_items: list[OrderItem] | None = None
-    status: OrderStatus | None = None
+    user_id: PositiveInt
+    id: PositiveInt
+    order_items: list[OrderItem]
+    status: OrderStatus
 
 
 
