@@ -6,6 +6,7 @@ Python 3.11.2
 Docker
 Docker-compose
 
+---
 
 ## Installation
 Create a virtual environment and activate it
@@ -36,11 +37,15 @@ docker-compose up -d
 uvicorn main:app --reload
 ```
 
+---
 
 ## Project structure
 TODO
 
+---
+
 ## Filters
+There are some custom filters that can be used in templates
 
 ### make_static
 Adds the static path to the file
@@ -53,4 +58,11 @@ Adds the media path to the file
 
 Example: `{{ '/images/image.png'|make_media }}`
 
+---
 
+## Auth
+There's a package *auth* that contains all the logic for authentication and authorization:
+- logic.py - contains all the logic for managing passwords and tokens. 
+- models.py - contains all the data models.
+- repository.py - contains all the logic for working with the database.
+- exceptions.py - contains all the exceptions that can be raised during the authentication process.

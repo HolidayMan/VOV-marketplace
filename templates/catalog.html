@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-        <div class="container">
+    <div class="container">
         <div class="catalog_category_selection">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,7 +32,28 @@
                 </div>
             </div>
             <div class="product_actions col-sm">
-                <button type="button" class="btn btn-success">Add to cart</button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addToCartModal">
+                    Add to cart
+                </button>
+                <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                      <form action="/addToCart" method="post">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="addToCartModalLabel">Add {{ product.product_data.name }} to cart</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+                          </div>
+                          <div class="modal-body">
+                            <input class="form-control" id="count" name="count" placeholder="Enter count" type="number"/>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Add</button>
+                          </div>
+                        </div>
+                      </form>
+                  </div>
+                </div>
             </div>
         </div>
         {% endfor %}
