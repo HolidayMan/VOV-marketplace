@@ -1,10 +1,12 @@
 import pytest
 from pydantic import EmailStr
 
-from auth.logic import get_password_hash, get_user, authenticate_user, create_access_token, get_user_by_token
+from auth.logic import get_password_hash, get_user, authenticate_user, create_access_token, get_user_by_token, \
+    create_user
 from auth.models import UserInDB, UserTokenData
 from auth.repository import FakeUserRepository, UserRepository
-from domain.user import UserRole
+from auth.exceptions import UserAlreadyExists
+from domain.user import UserRole, User
 
 
 @pytest.fixture
@@ -69,3 +71,23 @@ def test_get_user_by_token_returns_user_if_token_is_valid(mock_user, repository_
     token = create_access_token(UserTokenData(sub=user.email, role=user.role))
     result = get_user_by_token(repository_with_user, token)
     assert result == user
+
+
+def test_create_user_returns_user_if_user_does_not_exist(repository_with_user):
+    repository = repository_with_user
+    user = User(
+        name="test",
+        email="email@email.com",
+        role=UserRole.CUSTOMER
+    )
+
+    result = create_user(repository, user, "password")
+    assert result == repository.get_user_in_db(result.id)
+
+
+def test_create_user_raises_exception_if_user_exists(mock_user, repository_with_user):
+    repository = repository_with_user
+    user = mock_user.to_user()
+
+    with pytest.raises(UserAlreadyExists):
+        create_user(repository, user, "password")

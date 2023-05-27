@@ -4,9 +4,10 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
+from auth.exceptions import UserAlreadyExists
 from auth.models import UserInDB, UserTokenData
 from auth.repository import UserRepository
-from domain.user import UserRole
+from domain.user import UserRole, User
 from settings import SECRET_KEY, HASHING_ALGORITHM, CRYPT_CONTEXT_SCHEMES
 
 pwd_context = CryptContext(schemes=CRYPT_CONTEXT_SCHEMES, deprecated="auto")
@@ -67,3 +68,13 @@ def get_user_by_token(repository: UserRepository, token: str) -> UserInDB | None
         return None
     user = get_user(repository, EmailStr(email), user_role)
     return user
+
+
+def create_user(repository: UserRepository, user: User, password: str) -> UserInDB:
+    """
+    creates user in repository
+    """
+    if repository.find_user_in_db(user.email, user.role):
+        raise UserAlreadyExists("user already exists")
+    hashed_password = get_password_hash(password)
+    return repository.create_user(user, hashed_password)
