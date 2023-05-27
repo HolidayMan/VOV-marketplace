@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h1>Your cart</h1>
+        {% for cart_item in items_list %}
+        <div class="cart_row row">
+            <hr>
+            <div class="cart_item_image col-sm">
+                <img src="{{ cart_item.product.product_data.image_file_path|make_media }}" alt="Product image">
+            </div>
+            <div class="cart_item_info col-sm" >
+                <div class="cart_item_title">
+                    <h2>{{ cart_item.product.product_data.name }}</h2>
+                </div>
+                <div class="cart_item_description">
+                    <p>{{ cart_item.product.product_data.description }}</p>
+                </div>
+                <div class="cart_item_count">
+                    <p>Count: {{ cart_item.count }}</p>
+                </div>
+                <div class="cart_item_price">
+                    <p>Price: {{ cart_item.total() }}</p>
+                </div>
+            </div>
+            <div class="cart_item_actions col-sm">
+                <button type="button" class="btn btn-warning">Remove</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
