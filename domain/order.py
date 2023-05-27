@@ -2,7 +2,7 @@ from money import Money
 from pydantic import BaseModel
 from datetime import datetime
 from domain.product import Product
-from domain.types import PositiveInt
+from pydantic.types import PositiveInt
 from enum import Enum
 
 

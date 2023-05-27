@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>You're already logged in.</h1>
+    <a href="{{ url_for('logout') }}?next={{ next }}">Logout</a>
+{% endblock %}
