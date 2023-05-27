@@ -51,7 +51,7 @@ async def process_login(email: Annotated[EmailStr, Form()],
         return RedirectResponse(url=f"{router.url_path_for('login')}?error=Invalid credentials&role={role.value}"
                                     f"&next={quote_plus(next_)}",
                                 status_code=303)
-    response = RedirectResponse(url=f"{unquote_plus(next_)}?role={role.value}", status_code=303)
+    response = RedirectResponse(url=f"{unquote_plus(next_)}", status_code=303)
     response.set_cookie(key="access_token", value=data["access_token"])
     return response
 
@@ -82,6 +82,6 @@ async def process_register(name: Annotated[str, Form()], email: Annotated[EmailS
                                     f"&next={quote_plus(next_)}",
                                 status_code=303)
 
-    response = RedirectResponse(url=f"{unquote_plus(next_)}?role={role.value}", status_code=303)
+    response = RedirectResponse(url=f"{unquote_plus(next_)}", status_code=303)
     response.set_cookie(key="access_token", value=data["access_token"])
     return response
