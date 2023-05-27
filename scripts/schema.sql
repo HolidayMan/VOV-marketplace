@@ -250,7 +250,7 @@ CREATE TABLE add_product_request
 (
 	seller_id             BIGINT NOT NULL,
 	refuse_reason         TEXT NULL,
-	moderator_id          BIGINT NOT NULL,
+	moderator_id          BIGINT NULL,
 	product_data_id       BIGINT NOT NULL,
 	request_status_id     INTEGER NOT NULL,
 	creation_date         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -273,7 +273,7 @@ CREATE TABLE create_shop_request
 	request_status_id     INTEGER NOT NULL,
 	creation_date         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	check_date            DATETIME NULL,
-	moderator_id          BIGINT NOT NULL,
+	moderator_id          BIGINT NULL,
 	seller_id             BIGINT NOT NULL,
 	 PRIMARY KEY (shop_data_id), FOREIGN KEY shop_data_to_create_request (shop_data_id) REFERENCES shop_data(id)
 		ON DELETE CASCADE,
