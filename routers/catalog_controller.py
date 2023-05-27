@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request
-from repositories.fake_catalog_repository import FakeCatalogRepository
+from repositories.catalog.fake_catalog_repository import FakeCatalogRepository
 from services.catalog_service import CatalogService
 from utils.templates import render
 
@@ -13,3 +13,4 @@ async def load_catalog(request: Request, category: str | None = None):
     categories = catalog_service.get_categories()
     return render(request, "catalog.html",
                   {"products_list": products, "category_list": categories})
+

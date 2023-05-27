@@ -1,7 +1,5 @@
-import os
-
 from money import Money
-from repositories.catalog_repository import CatalogRepository
+from repositories.catalog.catalog_repository import CatalogRepository
 from domain.product import Category, Product, ProductData
 
 
