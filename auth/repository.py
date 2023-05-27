@@ -4,6 +4,7 @@ from pydantic import PositiveInt, EmailStr
 
 from auth.exceptions import UserDoesNotExist, UserAlreadyExists
 from auth.models import UserInDB
+from db import AsyncSession
 from domain.user import User, UserRole
 
 
@@ -105,3 +106,42 @@ FAKE_REPO = FakeUserRepository(db={
             hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW"
         )
     })
+
+
+class MySQLUserRepository(UserRepository):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def get_user_in_db(self, id_: PositiveInt) -> UserInDB:
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                "SELECT id, name, email, role, password FROM users WHERE id = %s LIMIT 1",
+                (id_,)
+            )
+            if user := await cursor.fetchone():
+                return UserInDB(
+                    id=PositiveInt(user['id']),
+                    name=user['name'],
+                    email=user['email'],
+                    role=UserRole(user['role']),
+                    hashed_password=user['password']
+                )
+            raise UserDoesNotExist("User does not exist")
+
+    async def get_user(self, id_: PositiveInt) -> User:
+        pass
+
+    async def create_user(self, user: User, hashed_password: str) -> UserInDB:
+        pass
+
+    async def update_user(self, user: UserInDB) -> UserInDB:
+        pass
+
+    async def delete_user(self, user: UserInDB) -> None:
+        pass
+
+    async def find_user(self, email: str, role: UserRole) -> User | None:
+        pass
+
+    async def find_user_in_db(self, email: str, role: UserRole) -> UserInDB | None:
+        pass
