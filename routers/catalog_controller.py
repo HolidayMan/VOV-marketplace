@@ -7,7 +7,7 @@ router = APIRouter()
 catalog_service = CatalogService(FakeCatalogRepository())
 
 
-@router.get("/catalog/")
+@router.get("/catalog/", name="catalog")
 async def load_catalog(request: Request, category: str | None = None):
     products = catalog_service.get_catalog_items(category)
     categories = catalog_service.get_categories()

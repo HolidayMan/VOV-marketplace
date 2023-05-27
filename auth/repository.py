@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from pydantic import PositiveInt
+from pydantic import PositiveInt, EmailStr
 
 from auth.exceptions import UserDoesNotExist, UserAlreadyExists
 from auth.models import UserInDB
@@ -17,7 +17,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user: UserInDB, hashed_password: str) -> UserInDB:
+    def create_user(self, user: User, hashed_password: str) -> UserInDB:
         pass
 
     @abstractmethod
@@ -66,7 +66,7 @@ class FakeUserRepository(UserRepository):
         if user.id:
             raise UserAlreadyExists("User already exists")
         if len(self.db.keys()) == 0:
-            new_id = 1
+            new_id = PositiveInt(1)
         else:
             new_id: PositiveInt = max(self.db.keys()) + 1
         user_in_db = UserInDB(**user.copy(update={'id': new_id}).dict(), hashed_password=hashed_password)
@@ -94,3 +94,14 @@ class FakeUserRepository(UserRepository):
             if user.email == email:
                 return user
         return None
+
+
+FAKE_REPO = FakeUserRepository(db={
+        PositiveInt(1): UserInDB(
+            id=PositiveInt(1),
+            name="John Doe",
+            email=EmailStr("example@gmail.com"),
+            role=UserRole.CUSTOMER,
+            hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW"
+        )
+    })

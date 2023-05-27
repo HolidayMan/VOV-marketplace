@@ -1,4 +1,5 @@
 import pytest
+from pydantic import PositiveInt
 
 from auth.exceptions import UserDoesNotExist, UserAlreadyExists
 from auth.repository import FakeUserRepository
@@ -33,7 +34,7 @@ def test_get_user(mock_user, fake_auth_repository_with_mock_user):
 
     # test get_user raises UserDoesNotExist if user does not exist
     with pytest.raises(UserDoesNotExist):
-        repository.get_user(2304920)
+        repository.get_user(PositiveInt(2304920))
 
 
 def test_get_user_in_db_returns_user_if_user_exists(mock_user, fake_auth_repository_with_mock_user):
@@ -50,7 +51,7 @@ def test_get_user_in_db_raises_user_does_not_exist_if_user_does_not_exist():
     repository = FakeUserRepository()
 
     with pytest.raises(UserDoesNotExist):
-        repository.get_user_in_db(1)
+        repository.get_user_in_db(PositiveInt(1))
 
 
 def test_create_user():
@@ -128,7 +129,7 @@ def test_exists(mock_user, fake_auth_repository_with_mock_user):
     assert repository.exists(user.id)
 
     # test exists returns False if user does not exist
-    assert not repository.exists(2304920)
+    assert not repository.exists(PositiveInt(2304920))
 
 
 def test_find_user(mock_user, fake_auth_repository_with_mock_user):
