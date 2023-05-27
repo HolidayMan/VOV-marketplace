@@ -36,13 +36,15 @@ def verify_moderator(user_role: UserRole = Depends(get_user_role)) -> bool:
     return user_role == UserRole.MODERATOR
 
 
-def require_auth(user: UserInDB | None = Depends(get_current_user)):
+def require_auth(user: UserInDB | None = Depends(get_current_user)) -> UserInDB:
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
+    return user
 
 
 def require_role(role: UserRole):
-    def wrapper(user_role: UserRole = Depends(get_user_role)):
-        if user_role != role:
+    def wrapper(user: UserInDB = Depends(get_current_user)) -> UserInDB:
+        if user.role != role:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+        return user
     return wrapper
