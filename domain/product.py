@@ -6,24 +6,24 @@ from money import Money
 
 
 class ProductData(BaseModel):
-    id: PositiveInt | None = None
-    name: str | None = None
-    description: str | None = None
+    id: PositiveInt
+    name: str
+    description: str
     image_file_path: str | None = None
-    approved: bool | None = None
+    approved: bool
 
 
 class Product(BaseModel):
-    id: PositiveInt | None = None
-    price: Money | None = None
-    shop_id: PositiveInt | None = None
-    product_data: ProductData | None = None
+    id: PositiveInt
+    price: Money
+    shop_id: PositiveInt
+    product_data: ProductData
 
     class Config:
         arbitrary_types_allowed = True
 
 
 class Category(BaseModel):
-    id: PositiveInt | None = None
-    name: str | None = None
+    id: PositiveInt
+    name: str
 

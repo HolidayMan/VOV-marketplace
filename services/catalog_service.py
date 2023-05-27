@@ -1,6 +1,5 @@
 from domain.product import Product, Category
 from repositories.catalog_repository import CatalogRepository
-from repositories.fake_catalog_repository import FakeCatalogRepository
 
 
 class CatalogService:
