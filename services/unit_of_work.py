@@ -21,13 +21,23 @@ class AsyncUnitOfWork(ABC):
 
 
 class MySQLAsyncUnitOfWork(AsyncUnitOfWork, ABC):
+    """
+    Example of inheritance:
+    class MySQLAsyncUserUnitOfWork(MySQLAsyncUnitOfWork):
+        users: MySQLUserRepository
+
+        async def __aenter__(self):
+            self.session = await self.session_factory()
+            self.users = MySQLUserRepository(self.session)
+            await super().__aenter__()
+    """
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
         self.session = None
 
     async def __aexit__(self, *args):
         await super().__aexit__(*args)
-        await self.session.close()
+        self.session.close()
 
     async def commit(self):
         await self.session.commit()

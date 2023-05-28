@@ -46,8 +46,8 @@ class AsyncSession:
     async def rollback(self):
         await self._conn.rollback()
 
-    async def close(self):
-        await self._conn.close()
+    def close(self):
+        self._conn.close()
 
 
 def session_maker(loop: asyncio.AbstractEventLoop, host: str, port: int, user: str, password: str, db: str):
