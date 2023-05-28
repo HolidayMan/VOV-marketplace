@@ -4,6 +4,8 @@ from pydantic import PositiveInt, EmailStr
 
 from auth.exceptions import UserDoesNotExist, UserAlreadyExists
 from auth.models import UserInDB
+from auth.sql import SELECT_USER_BY_ID
+from db import AsyncSession
 from domain.user import User, UserRole
 
 
@@ -51,9 +53,7 @@ class FakeUserRepository(UserRepository):
         self.db = db
 
     def get_user(self, id_: PositiveInt) -> User:
-        user = self.db.get(id_)
-        if user is None:
-            raise UserDoesNotExist("User does not exist")
+        user = self.get_user_in_db(id_)
         return user.to_user()
 
     def get_user_in_db(self, id_: PositiveInt) -> UserInDB:
@@ -97,11 +97,51 @@ class FakeUserRepository(UserRepository):
 
 
 FAKE_REPO = FakeUserRepository(db={
-        PositiveInt(1): UserInDB(
-            id=PositiveInt(1),
-            name="John Doe",
-            email=EmailStr("example@gmail.com"),
-            role=UserRole.CUSTOMER,
-            hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW"
-        )
-    })
+    PositiveInt(1): UserInDB(
+        id=PositiveInt(1),
+        name="John Doe",
+        email=EmailStr("example@gmail.com"),
+        role=UserRole.CUSTOMER,
+        hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW"
+    )
+})
+
+
+class MySQLUserRepository(UserRepository):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def get_user_in_db(self, id_: PositiveInt) -> UserInDB:
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                SELECT_USER_BY_ID,
+                (id_,)
+            )
+            if user := await cursor.fetchone():
+                return UserInDB(
+                    id=PositiveInt(user['id']),
+                    name=user['name'],
+                    email=user['email'],
+                    role=UserRole(user['role']),
+                    hashed_password=user['password']
+                )
+            raise UserDoesNotExist("User does not exist")
+
+    async def get_user(self, id_: PositiveInt) -> User:
+        user = await self.get_user_in_db(id_)
+        return user.to_user()
+
+    async def create_user(self, user: User, hashed_password: str) -> UserInDB:
+        pass
+
+    async def update_user(self, user: UserInDB) -> UserInDB:
+        pass
+
+    async def delete_user(self, user: UserInDB) -> None:
+        pass
+
+    async def find_user(self, email: str, role: UserRole) -> User | None:
+        pass
+
+    async def find_user_in_db(self, email: str, role: UserRole) -> UserInDB | None:
+        pass

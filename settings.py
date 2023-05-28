@@ -27,3 +27,12 @@ filters.init_all_filters(TEMPLATE_RENDERER.env)
 # TEMPLATE_RENDERER.env.add_extension('utils.tags.StaticExtension')
 
 CRYPT_CONTEXT_SCHEMES = ['bcrypt']
+
+# Database
+DB_SETTINGS = {
+    "host": os.getenv('DB_HOST', 'localhost'),
+    "port": os.getenv('DB_PORT', 3306),
+    "db": os.getenv('DB_NAME', 'vov_database'),
+    "user": os.getenv('DB_USER', 'vov_user'),
+    "password": os.getenv('DB_PASSWORD', 'zCRkKF9DMJ'),
+}
