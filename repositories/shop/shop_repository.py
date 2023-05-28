@@ -6,9 +6,9 @@ from domain.user import User
 class ShopRepository(ABC):
 
     @abstractmethod
-    def create(self, shop: Shop) -> Shop:
+    def create_shop(self, shop: Shop) -> Shop:
         pass
 
     @abstractmethod
-    def get(self, seller: User) -> Shop:
+    def get_shop(self, seller: User) -> Shop:
         pass

@@ -18,3 +18,5 @@ class ShopService:
 
     def get_shop_creation_request(self, seller: User):
         pass
+
+
