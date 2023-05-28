@@ -32,10 +32,12 @@ class AsyncSession:
         await cursor.execute('SELECT * FROM table')
         conn.commit()
     """
-    def __init__(self, conn: aiomysql.Connection, cursor_type: Type[aiomysql.Cursor] = aiomysql.DictCursor):
+    def __init__(self, conn: aiomysql.Connection, cursor_type: Type[aiomysql.Cursor] = aiomysql.DictCursor,
+                 auto_close: bool = True):
         self._conn: aiomysql.Connection = conn
         self._cursor: aiomysql.Cursor | None = None
         self._cursor_type = cursor_type
+        self._auto_close = auto_close
 
     def cursor(self) -> _AsyncCursorManager:
         return _AsyncCursorManager(self._conn, self._cursor_type)
@@ -49,17 +51,21 @@ class AsyncSession:
     def close(self):
         self._conn.close()
 
+    def __del__(self):
+        if self._auto_close:
+            self.close()
+
 
 def session_maker(loop: asyncio.AbstractEventLoop, host: str, port: int, user: str, password: str, db: str):
     """
     Creates a new sessionmaker object.
     """
-    async def factory(cursor_type: Type[aiomysql.Cursor] = aiomysql.DictCursor) -> AsyncSession:
+    async def factory(cursor_type: Type[aiomysql.Cursor] = aiomysql.DictCursor, auto_close: bool = True) -> AsyncSession:
         """
         Creates a new session.
         """
         conn = await aiomysql.connect(host=host, port=port, user=user, password=password, db=db, loop=loop)
-        return AsyncSession(conn, cursor_type)
+        return AsyncSession(conn, cursor_type, auto_close)
     return factory
 
 
