@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+
+from pydantic import PositiveInt
+
 from domain.cart import CartItem
 from domain.user import User
 
@@ -9,9 +12,9 @@ class CartRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cart_item(self, user: User, item: CartItem) -> CartItem:
+    def add_cart_item(self, user: User, productId: PositiveInt, count: PositiveInt) -> CartItem:
         pass
 
     @abstractmethod
-    def remove_cart_item(self, user: User, item: CartItem) -> bool:
+    def remove_cart_item(self, user: User, productId: PositiveInt) -> bool:
         pass

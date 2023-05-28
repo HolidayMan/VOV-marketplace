@@ -8,7 +8,7 @@ from pydantic.types import PositiveInt
 class CartItem(BaseModel):
     product: Product
     count: PositiveInt
-    user_id: PositiveInt
+    user_id: PositiveInt | None
 
     def total(self) -> Money:
         product_price = self.product.price
