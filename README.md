@@ -66,3 +66,56 @@ There's a package *auth* that contains all the logic for authentication and auth
 - models.py - contains all the data models.
 - repository.py - contains all the logic for working with the database.
 - exceptions.py - contains all the exceptions that can be raised during the authentication process.
+
+
+## DB
+There's a module *db.py* that contains all the abstractions for working with the MySQL database asynchronously:
+- **AsyncSession** - a class that represents an asynchronous session with the database.
+- **session_maker** - a function that accepts params for connecting to DB and returns factory for getting sessions.
+
+Example of working with session:
+
+```python
+from db import DEFAULT_SESSION_FACTORY
+
+async def some_function():
+    async with DEFAULT_SESSION_FACTORY() as session:
+        session = await DEFAULT_SESSION_FACTORY()
+        async with session.cursor() as cursor:
+            await cursor.execute('SELECT * FROM users')
+            result = await cursor.fetchall()
+            session.close()  # don't forget to close the session
+            return result
+```
+
+### Unit of work
+There's a module *services.unit_of_work.py* that contains all the logic for working with the database in the context of a single transaction:
+- **AsyncUnitOfWork** - an abstract class that represents an asynchronous unit of work.
+- **MySQLAsyncUnitOfWork** - an abstract class that represents an asynchronous unit of work for MySQL database.
+
+Example of creating custom unit of work:
+
+```python
+from services.unit_of_work import MySQLAsyncUnitOfWork
+from auth.repository import MySQLUserRepository
+
+class MySQLAsyncUserUnitOfWork(MySQLAsyncUnitOfWork):
+        users: MySQLUserRepository
+
+        async def __aenter__(self):
+            self.session = await self.session_factory()
+            self.users = MySQLUserRepository(self.session)
+            await super().__aenter__()
+```
+
+Example of working with unit of work:
+
+```python
+from domain.user import User
+from auth.unit_of_work import MySQLAsyncUserUnitOfWork
+
+async def some_function(user: User):
+    async with MySQLAsyncUserUnitOfWork() as uow:
+        await uow.users.create_user(user, 'hashed_password')
+        await uow.commit()
+```
