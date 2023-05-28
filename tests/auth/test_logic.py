@@ -4,7 +4,7 @@ from pydantic import EmailStr
 from auth.logic import get_password_hash, get_user, authenticate_user, create_access_token, get_user_by_token, \
     create_user
 from auth.models import UserInDB, UserTokenData
-from auth.repository import FakeUserRepository, UserRepository
+from auth.repository import FakeUserRepository, AsyncUserRepository
 from auth.exceptions import UserAlreadyExists
 from domain.user import UserRole, User
 
@@ -21,7 +21,7 @@ def mock_user() -> UserInDB:
 
 
 @pytest.fixture
-def repository_with_user(mock_user) -> UserRepository:
+def repository_with_user(mock_user) -> AsyncUserRepository:
     return FakeUserRepository(db={mock_user.id: mock_user})
 
 

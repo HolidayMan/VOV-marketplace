@@ -1,10 +1,13 @@
-from auth.repository import UserRepository
-from db import AsyncSession, DEFAULT_SESSION_FACTORY
+from abc import ABC, abstractmethod
 from .repository import MySQLUserRepository
-from services.unit_of_work import MySQLAsyncUnitOfWork
+from services.unit_of_work import MySQLAsyncUnitOfWork, AsyncUnitOfWork
 
 
-class MySQLAsyncUserUnitOfWork(MySQLAsyncUnitOfWork):
+class AsyncUserUnitOfWork(AsyncUnitOfWork, ABC):
+    users: MySQLUserRepository
+
+
+class MySQLAsyncUserUnitOfWork(MySQLAsyncUnitOfWork, AsyncUserUnitOfWork):
     users: MySQLUserRepository
 
     async def __aenter__(self):

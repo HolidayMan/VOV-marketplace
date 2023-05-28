@@ -6,7 +6,7 @@ from pydantic import EmailStr
 
 from auth.exceptions import UserAlreadyExists
 from auth.models import UserInDB, UserTokenData
-from auth.repository import UserRepository
+from .unit_of_work import AsyncUserUnitOfWork
 from domain.user import UserRole, User
 from settings import SECRET_KEY, HASHING_ALGORITHM, CRYPT_CONTEXT_SCHEMES
 
@@ -21,17 +21,18 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(repository: UserRepository, email: EmailStr, role: UserRole) -> UserInDB | None:
+async def get_user(uow: AsyncUserUnitOfWork, email: EmailStr, role: UserRole) -> UserInDB | None:
     """gets user from repository by email and role"""
-    return repository.find_user_in_db(email, role)
+    async with uow:
+        return await uow.users.find_user_in_db(email, role)
 
 
-def authenticate_user(repository: UserRepository, email: EmailStr, role: UserRole, password: str) -> UserInDB | None:
+async def authenticate_user(uow: AsyncUserUnitOfWork, email: EmailStr, role: UserRole, password: str) -> UserInDB | None:
     """
     authenticates user by email and role
     returns user if password is correct otherwise returns None
     """
-    user = get_user(repository, email, role)
+    user = await get_user(uow, email, role)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):
@@ -53,7 +54,7 @@ def create_access_token(data: UserTokenData, expires_delta: timedelta | None = N
     return encoded_jwt
 
 
-def get_user_by_token(repository: UserRepository, token: str) -> UserInDB | None:
+async def get_user_by_token(uow: AsyncUserUnitOfWork, token: str) -> UserInDB | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[HASHING_ALGORITHM])
         email: str = payload.get("sub")
@@ -66,15 +67,16 @@ def get_user_by_token(repository: UserRepository, token: str) -> UserInDB | None
         user_role = UserRole(role)
     except ValueError:
         return None
-    user = get_user(repository, EmailStr(email), user_role)
+    user = await get_user(uow, EmailStr(email), user_role)
     return user
 
 
-def create_user(repository: UserRepository, user: User, password: str) -> UserInDB:
+async def create_user(uow: AsyncUserUnitOfWork, user: User, password: str) -> UserInDB:
     """
     creates user in repository
     """
-    if repository.find_user_in_db(user.email, user.role):
-        raise UserAlreadyExists("user already exists")
-    hashed_password = get_password_hash(password)
-    return repository.create_user(user, hashed_password)
+    async with uow:
+        if await uow.users.find_user_in_db(user.email, user.role):
+            raise UserAlreadyExists("user already exists")
+        hashed_password = get_password_hash(password)
+        return await uow.users.create_user(user, hashed_password)
