@@ -7,11 +7,10 @@ from urllib.parse import quote_plus, unquote_plus
 from domain.user import UserRole, User
 from utils.templates import render
 from .exceptions import CredentialsInvalid, UserAlreadyExists
-from .repository import FAKE_REPO
 
 from .services import process_user_login, process_create_user
 from app import app
-from .dependencies import get_current_user
+from .dependencies import get_current_user, get_uow
 
 
 router = APIRouter(prefix="/auth")
@@ -41,12 +40,15 @@ async def login_form(request: Request, role: UserRole = UserRole.CUSTOMER, error
 @router.post("/process-login", name="process_login")
 async def process_login(email: Annotated[EmailStr, Form()],
                         password: Annotated[str, Form()], role: Annotated[UserRole, Form()],
-                        next_: str = Query(default=None, alias="next")):
-    repo = FAKE_REPO
+                        next_: str = Query(default=None, alias="next"), uow=Depends(get_uow),
+                        user=Depends(get_current_user)):
     if not next_:
         next_ = app.url_path_for('catalog')
+    if user:
+        return RedirectResponse(url=f"{router.url_path_for('login')}?role={role.value}"
+                                    f"&next={quote_plus(next_)}", status_code=303)
     try:
-        data = process_user_login(repo, email, password, role)
+        data = await process_user_login(uow, email, password, role)
     except CredentialsInvalid:
         return RedirectResponse(url=f"{router.url_path_for('login')}?error=Invalid credentials&role={role.value}"
                                     f"&next={quote_plus(next_)}",
@@ -70,13 +72,16 @@ async def register_form(request: Request, role: UserRole = UserRole.CUSTOMER,
 @router.post("/process-register", name="process_register")
 async def process_register(name: Annotated[str, Form()], email: Annotated[EmailStr, Form()],
                            password: Annotated[str, Form()], role: Annotated[UserRole, Form()],
-                           next_: str = Query(default=None, alias="next")):
-    repo = FAKE_REPO
+                           next_: str = Query(default=None, alias="next"), uow=Depends(get_uow),
+                           user=Depends(get_current_user)):
     if not next_:
         next_ = app.url_path_for('catalog')
+    if user:
+        return RedirectResponse(url=f"{router.url_path_for('register')}?&role={role.value}&next={quote_plus(next_)}",
+                                status_code=303)
     error_message = "User with this email and role already exists"
     try:
-        data = process_create_user(repo, User(name=name, email=email, role=role), password)
+        data = await process_create_user(uow, User(name=name, email=email, role=role), password)
     except UserAlreadyExists:
         return RedirectResponse(url=f"{router.url_path_for('register')}?error={error_message}&role={role.value}"
                                     f"&next={quote_plus(next_)}",
