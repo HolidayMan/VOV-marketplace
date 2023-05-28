@@ -1,5 +1,4 @@
-from pydantic import BaseModel
-from domain.types import PositiveInt
+from pydantic import BaseModel, PositiveInt
 
 
 class ShopData(BaseModel):

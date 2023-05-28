@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Seller cabinet{% endblock %}</title>
+    <link href="{{ "css/bootstrap.min.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
+    <link href="{{ "css/style.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
+    <link href="{{ "css/seller/main.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
+    <script src="{{ "js/bootstrap.bundle.min.js"|make_static }}"></script>
+</head>
+<body>
+    {% include "seller/includes/navbar.html" %}
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

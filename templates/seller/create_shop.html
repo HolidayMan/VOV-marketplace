@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container">
+    <h1>Create Shop</h1>
+    <form class="mb-3" method="POST" action="/createShop">
+        <label class="form-label" for="name">Shop Name:{{ name }}</label>
+        <input type="text" class="form-control" id="name" name="name" required><br>
+        <label class="form-label" for="description">Description:{{ description }}</label>
+        <textarea type="text" class="form-control" id="description" name="description" required></textarea><br><br>
+        <input class="button" type="submit" value="Create Shop">
+    </form>
+ </div>
+{% endblock %}
