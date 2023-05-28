@@ -5,10 +5,10 @@ from auth.exceptions import UserDoesNotExist
 from domain.cart import CartItem
 from domain.product import Product, ProductData
 from domain.user import User, UserRole
-from repositories.cart.cart_repository import CartRepository
+from repositories.cart.cart_repository import AsyncCartRepository
 
 
-class FakeCartRepository(CartRepository):
+class FakeAsyncCartRepository(AsyncCartRepository):
 
     def __init__(self, db: dict[User, list[CartItem]]):
         if db is None:
@@ -33,7 +33,7 @@ class FakeCartRepository(CartRepository):
         return True
 
 
-FAKE_CART_REPO = FakeCartRepository(db={
+FAKE_CART_REPO = FakeAsyncCartRepository(db={
     User(
         id=PositiveInt(1),
         name="John Doe",

@@ -1,9 +1,9 @@
 from money import Money
-from repositories.catalog.catalog_repository import CatalogRepository
+from repositories.catalog.catalog_repository import AsyncCatalogRepository
 from domain.product import Category, Product, ProductData
 
 
-class FakeCatalogRepository(CatalogRepository):
+class FakeAsyncCatalogRepository(AsyncCatalogRepository):
     products_food = [
         Product(
             price=Money(5, "USD"),

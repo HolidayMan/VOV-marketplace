@@ -12,10 +12,10 @@ class CatalogService:
     async def get_catalog_items(self, category_name: str | None) -> list[Product]:
         async with self._uow:
             if category_name is not None:
-                return self._uow.catalog.get_catalog_items_with_category(category_name)
+                return await self._uow.catalog.get_catalog_items_with_category(category_name)
             else:
-                return self._uow.catalog.get_catalog_items()
+                return await self._uow.catalog.get_catalog_items()
 
     async def get_categories(self) -> list[Category]:
         async with self._uow:
-            return self._uow.catalog.get_categories()
+            return await self._uow.catalog.get_categories()
