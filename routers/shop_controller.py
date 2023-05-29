@@ -25,6 +25,6 @@ async def load_shop_form(request: Request, seller: User = Depends(get_user)):
 @router.get("/loadShop", name="loadShop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
 async def load_created_shop(request: Request, seller: User = Depends(get_user)):
-    return render(request, "create_shop.html", {})
+    return render(request, "seller/load_shop.html", {})
 
 

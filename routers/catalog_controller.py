@@ -14,3 +14,4 @@ async def load_catalog(request: Request, category: str | None = None):
     return render(request, "catalog.html",
                   {"products_list": products, "category_list": categories})
 
+
