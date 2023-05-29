@@ -16,7 +16,7 @@ service = CartService(MySQLAsyncCartUnitOfWork())
 async def get_cart_items(request: Request, user: User = Depends(get_user)):
     try:
         items = await service.get_cart_items(user)
-        return render(request, "cart.html",
+        return render(request, "customer/cart.html",
                       {"items_list": items})
     except DataAccessError:
         return {"something": "went wrong"}

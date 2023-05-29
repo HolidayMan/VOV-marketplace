@@ -12,7 +12,7 @@ catalog_service = CatalogService(MySQLAsyncCatalogUnitOfWork())
 async def load_catalog(request: Request, category: str | None = None):
     products = await catalog_service.get_catalog_items(category)
     categories = await catalog_service.get_categories()
-    return render(request, "catalog.html",
+    return render(request, "customer/catalog.html",
                   {"products_list": products, "category_list": categories})
 
 
