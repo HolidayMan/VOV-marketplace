@@ -37,14 +37,18 @@
                 </button>
                 <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
-                      <form action="/addToCart" method="post">
+                      <form method="post" action="{{ url_for("addToCart") }}">
                         <div class="modal-content">
                           <div class="modal-header">
                             <h1 class="modal-title fs-5" id="addToCartModalLabel">Add {{ product.product_data.name }} to cart</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
                           </div>
                           <div class="modal-body">
-                            <input class="form-control" id="count" name="count" placeholder="Enter count" type="number"/>
+                            <label class="form-label" for="count">
+                                Enter product count
+                            </label>
+                            <input class="form-control" id="count" name="count" placeholder="Enter count" type="number">
+                            <input type="hidden" id="productId" name="productId" value="{{ product.id }}"/>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -1,3 +1,4 @@
+from money import Money
 from pydantic import PositiveInt
 from db import AsyncSession
 from domain.cart import CartItem
@@ -10,19 +11,19 @@ from repositories.cart.cart_repository import AsyncCartRepository
 def map_row_to_cart_item(row) -> CartItem:
     return CartItem(
         product=Product(
-            id=row['product_id'],
-            price=row['price'],
-            shop_id=row['seller_id'],
+            id=PositiveInt(row['product_id']),
+            price=Money(row['price'], 'UAH'),
+            shop_id=PositiveInt(row['seller_id']),
             product_data=ProductData(
-                id=row['product_data_id'],
+                id=PositiveInt(row['product_data_id']),
                 name=row['name'],
                 description=row['description'],
                 image_file_path=row['image_file_path'],
                 approved=row['approved']
             )
         ),
-        count=row['count'],
-        user_id=row['customer_id']
+        count=PositiveInt(row['count']),
+        user_id=PositiveInt(row['customer_id'])
     )
 
 
