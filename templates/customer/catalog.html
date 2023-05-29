@@ -33,10 +33,10 @@
                 </div>
             </div>
             <div class="product_actions col-sm">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addToCartModal">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addToCartModal{{ product.id }}">
                     Add to cart
                 </button>
-                <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addToCartModal{{ product.id }}" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                       <form method="post" action="{{ url_for("addToCart") }}">
                         <div class="modal-content">

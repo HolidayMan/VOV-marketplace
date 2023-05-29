@@ -47,7 +47,7 @@ class MySQLAsyncCartRepository(AsyncCartRepository):
                 (user.id, productId)
             )
             if item := await cursor.fetchone():
-                return item
+                return map_row_to_cart_item(item)
             return None
 
     async def get_cart_items(self, user: User) -> list[CartItem]:
@@ -65,10 +65,9 @@ class MySQLAsyncCartRepository(AsyncCartRepository):
         async with self.session.cursor() as cursor:
             if item := await self.get_single_cart_item(user, productId):
                 count += item.count
-                await self.remove_cart_item(user, productId)
             await cursor.execute(
                 INSERT_CART_ITEM,
-                (count, productId, user.id)
+                (count, productId, user.id, count)
             )
             await self.session.commit()
             item_to_return = await self.get_single_cart_item(user, productId)
