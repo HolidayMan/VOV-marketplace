@@ -37,12 +37,5 @@ services:
     environment:
       MYSQL_ROOT_HOST: '%'
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 1234:8080
-
-
 volumes:
   mysql_data:
