@@ -8,3 +8,7 @@ class UserAlreadyExists(Exception):
 
 class CredentialsInvalid(Exception):
     pass
+
+
+class UserIsNone(Exception):
+    pass

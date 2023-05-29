@@ -28,6 +28,7 @@ class OrderItem(BaseModel):
 class OrderStatus(Enum):
     IN_PROCESS = "in_process"
     CLOSED = "closed"
+    CANCELED = "canceled"
 
 
 class Order(BaseModel):

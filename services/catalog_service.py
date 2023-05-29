@@ -1,19 +1,21 @@
 from domain.product import Product, Category
-from repositories.catalog.catalog_repository import CatalogRepository
+from services.uow.catalog.catalog_unit_of_work import AbstractCatalogUnitOfWork
 
 
 class CatalogService:
 
-    _repository: CatalogRepository = None
+    _uow: AbstractCatalogUnitOfWork
 
-    def __init__(self, repository: CatalogRepository):
-        self._repository = repository
+    def __init__(self, unit_of_work: AbstractCatalogUnitOfWork):
+        self._uow = unit_of_work
 
-    def get_catalog_items(self, category_name: str | None) -> list[Product]:
-        if category_name is not None:
-            return self._repository.get_catalog_items_with_category(category_name)
-        else:
-            return self._repository.get_catalog_items()
+    async def get_catalog_items(self, category_name: str | None) -> list[Product]:
+        async with self._uow:
+            if category_name is not None:
+                return await self._uow.catalog.get_catalog_items_with_category(category_name)
+            else:
+                return await self._uow.catalog.get_catalog_items()
 
-    def get_categories(self) -> list[Category]:
-        return self._repository.get_categories()
+    async def get_categories(self) -> list[Category]:
+        async with self._uow:
+            return await self._uow.catalog.get_categories()
