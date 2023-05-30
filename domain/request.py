@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from domain.types import PositiveInt
+from pydantic.types import PositiveInt
 from enum import Enum
 from datetime import datetime
-from shop import ShopData
+from domain.shop import ShopData
 from domain.user import User
 
 
