@@ -96,4 +96,5 @@ class MySQLAsyncCartRepository(AsyncCartRepository):
                 UPDATE_CART_ITEMS_PRICES,
                 (user.id,)
             )
+            await self.session.commit()
 

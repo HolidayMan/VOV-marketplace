@@ -21,17 +21,23 @@ service = CustomerOrderService(order_unit_of_work=MySQLAsyncCustomerOrderUnitOfW
 @router.post("/makeOrder", name="makeOrder",
              dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def make_order(request: Request, user: User = Depends(get_user)):
-    pass
+    try:
+        if not service.can_make_order(user):
+            return RedirectResponse(url=f"{app.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
+        created_order = await service.make_order(user)
+        return render(request, "customer/view_order.html", {"order": created_order})
+    except DataAccessError:
+        return render(request, "data_access_error.html", {})
 
 
 @router.get("/previewOrder", name="previewOrder",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def preview_order(request: Request, user: User = Depends(get_user)):
     try:
-        order_preview = await service.get_order_preview(user)
-        if not order_preview.order_items:
+        if not service.can_make_order(user):
             return RedirectResponse(url=f"{app.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
-        return render(request, "order_preview.html", {"order": order_preview})
+        order_preview = await service.get_order_preview(user)
+        return render(request, "customer/order_preview.html", {"order": order_preview})
     except DataAccessError:
         return render(request, "data_access_error.html", {})
 
