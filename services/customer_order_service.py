@@ -1,9 +1,27 @@
+from datetime import datetime
+
 from pydantic import PositiveInt
 
-from domain.order import Order
+from domain.cart import CartItem
+from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.user import User
 from services.uow.cart.cart_unit_of_work import AbstractCartUnitOfWork
 from services.uow.customer_order.customer_order_unit_of_work import AbstractCustomerOrderUnitOfWork
+
+
+def make_order_items_from_cart_items(cart_items_list: list[CartItem]) -> list[OrderItem]:
+    order_items_list = []
+    for cart_item in cart_items_list:
+        order_item = OrderItem(
+            refuse_reason=None,
+            product=cart_item.product,
+            price=cart_item.price,
+            check_date=None,
+            status=OrderItemStatus.IN_PROCESS,
+            count=cart_item.count
+        )
+        order_items_list.append(order_item)
+    return order_items_list
 
 
 class CustomerOrderService:
@@ -24,3 +42,16 @@ class CustomerOrderService:
 
     async def get_order(self, user: User, orderId: PositiveInt) -> Order:
         pass
+
+    async def get_order_preview(self, user: User) -> Order:
+        async with self._cart_uow:
+            await self._cart_uow.cart_items.update_cart_items_prices(user)
+            cart_items = await self._cart_uow.cart_items.get_cart_items(user)
+            order_items = make_order_items_from_cart_items(cart_items)
+            order = Order(user_id=user.id,
+                          id=None,
+                          order_items=order_items,
+                          status=OrderStatus.IN_PROCESS,
+                          creation_date=datetime.now(),)
+            return order
+
