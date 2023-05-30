@@ -18,3 +18,7 @@ class AsyncCartRepository(ABC):
     @abstractmethod
     async def remove_cart_item(self, user: User, productId: PositiveInt) -> bool:
         pass
+
+    @abstractmethod
+    async def update_cart_items_prices(self, user: User):
+        pass

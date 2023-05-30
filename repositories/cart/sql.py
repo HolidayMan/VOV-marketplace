@@ -18,3 +18,8 @@ SELECT * FROM cart_item JOIN product ON cart_item.product_id = product.id
                         JOIN product_data ON product.product_data_id = product_data.id
                         WHERE cart_item.customer_id = %s AND cart_item.product_id = %s;
 """
+
+UPDATE_CART_ITEMS_PRICES = """
+UPDATE cart_item SET cart_item.price = (SELECT product.price FROM product WHERE product.id = cart_item.product_id)
+WHERE cart_item.customer_id = %s
+"""
