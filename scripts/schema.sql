@@ -65,6 +65,7 @@ CREATE TABLE `order`
 	id                    BIGINT NOT NULL auto_increment,
 	status_id             INTEGER NOT NULL,
 	customer_id           BIGINT NOT NULL,
+	creation_date         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	 PRIMARY KEY (id), FOREIGN KEY order_status_to_order (status_id) REFERENCES order_status(id),
 	FOREIGN KEY customer_to_order (customer_id) REFERENCES user(id)
 		ON DELETE CASCADE
@@ -185,7 +186,6 @@ CREATE TABLE order_item
 	product_id            BIGINT NOT NULL,
 	status_id             INTEGER NOT NULL,
 	refuse_reason         TEXT NULL,
-	creation_date         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	check_date            DATETIME NULL,
 	 PRIMARY KEY (order_id,product_id), FOREIGN KEY order_to_order_item (order_id) REFERENCES `order`(id)
 		ON DELETE CASCADE,
@@ -292,6 +292,8 @@ CREATE TABLE cart_item
 		CONSTRAINT CHECK (count >= 1),
 	product_id            BIGINT NOT NULL,
 	customer_id           BIGINT NOT NULL,
+	price                 DECIMAL(10,2) NULL
+		CONSTRAINT CHECK (price >= 0),
 	 PRIMARY KEY (product_id,customer_id), FOREIGN KEY product_to_cart_item (product_id) REFERENCES product(id)
 		ON DELETE CASCADE,
 	FOREIGN KEY customer_to_cart_items (customer_id) REFERENCES user(id)

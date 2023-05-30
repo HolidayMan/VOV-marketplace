@@ -15,14 +15,17 @@ class OrderItemStatus(Enum):
 class OrderItem(BaseModel):
     refuse_reason: str | None = None
     product: Product
+    # price field stores the price of a single product item at the moment of ordering
     price: Money
-    creation_date: datetime
     check_date: datetime | None = None
     status: OrderItemStatus
     count: PositiveInt
 
     class Config:
         arbitrary_types_allowed = True
+
+    def total(self) -> Money:
+        return self.price * self.count
 
 
 class OrderStatus(Enum):
@@ -33,9 +36,16 @@ class OrderStatus(Enum):
 
 class Order(BaseModel):
     user_id: PositiveInt
-    id: PositiveInt
+    id: PositiveInt | None
     order_items: list[OrderItem]
     status: OrderStatus
+    creation_date: datetime
+
+    def total(self) -> Money:
+        total_cost = Money()
+        for item in self.order_items:
+            total_cost += item.total()
+        return total_cost
 
 
 

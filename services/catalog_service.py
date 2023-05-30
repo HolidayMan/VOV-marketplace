@@ -1,4 +1,7 @@
+from pymysql import ProgrammingError
+
 from domain.product import Product, Category
+from services.exceptions import DataAccessError
 from services.uow.catalog.catalog_unit_of_work import AbstractCatalogUnitOfWork
 
 
@@ -10,12 +13,19 @@ class CatalogService:
         self._uow = unit_of_work
 
     async def get_catalog_items(self, category_name: str | None) -> list[Product]:
-        async with self._uow:
-            if category_name is not None:
-                return await self._uow.catalog.get_catalog_items_with_category(category_name)
-            else:
-                return await self._uow.catalog.get_catalog_items()
+        try:
+            async with self._uow:
+                if category_name is not None:
+                    return await self._uow.catalog.get_catalog_items_with_category(category_name)
+                else:
+                    return await self._uow.catalog.get_catalog_items()
+        except ProgrammingError:
+            raise DataAccessError("Data access error")
 
     async def get_categories(self) -> list[Category]:
-        async with self._uow:
-            return await self._uow.catalog.get_categories()
+        try:
+            async with self._uow:
+                return await self._uow.catalog.get_categories()
+        except ProgrammingError:
+            raise DataAccessError("Data access error")
+
