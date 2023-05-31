@@ -4,15 +4,16 @@ from db import AsyncSession
 from domain.cart import CartItem
 from domain.product import Product, ProductData
 from domain.user import User
-from repositories.cart.sql import SELECT_CART_ITEMS, INSERT_CART_ITEM, DELETE_CART_ITEM, GET_CART_ITEM
+from repositories.cart.sql import SELECT_CART_ITEMS, INSERT_CART_ITEM, DELETE_CART_ITEM, GET_CART_ITEM, \
+    UPDATE_CART_ITEMS_PRICES, DELETE_ALL_CART_ITEMS_BY_USER_ID
 from repositories.cart.cart_repository import AsyncCartRepository
 
 
 def map_row_to_cart_item(row) -> CartItem:
-    return CartItem(
+    cart_item = CartItem(
         product=Product(
             id=PositiveInt(row['product_id']),
-            price=Money(row['price'], 'UAH'),
+            price=Money(row['product.price'], 'UAH'),
             shop_id=PositiveInt(row['seller_id']),
             product_data=ProductData(
                 id=PositiveInt(row['product_data_id']),
@@ -23,8 +24,12 @@ def map_row_to_cart_item(row) -> CartItem:
             )
         ),
         count=PositiveInt(row['count']),
-        user_id=PositiveInt(row['customer_id'])
+        user_id=PositiveInt(row['customer_id']),
     )
+    price = row['price']
+    if price is not None:
+        cart_item.price = Money(price, 'UAH')
+    return cart_item
 
 
 def map_rows_to_cart_items_list(cart_items_rows) -> list[CartItem]:
@@ -85,5 +90,18 @@ class MySQLAsyncCartRepository(AsyncCartRepository):
             await self.session.commit()
             return True
 
+    async def update_cart_items_prices(self, user: User):
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                UPDATE_CART_ITEMS_PRICES,
+                (user.id,)
+            )
+            await self.session.commit()
 
-
+    async def remove_all_cart_items(self, user: User):
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                DELETE_ALL_CART_ITEMS_BY_USER_ID,
+                (user.id,)
+            )
+            await self.session.commit()

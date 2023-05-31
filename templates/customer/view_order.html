@@ -1,0 +1,35 @@
+{% extends 'customer/base.html' %}
+{% block content %}
+    <div class="container m-2">
+        {% if order is defined %}
+            <h2>Your order</h2>
+            <h3>Total cost: {{ order.total() }}</h3>
+            <h3>Creation date: {{ order.creation_date }}</h3>
+            <h3>Order status: {{ order.status }}</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Image</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Count</th>
+                  <th scope="col">Cost</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for order_item in order.order_items %}
+                <tr>
+                  <td>
+                      <img src="{{ order_item.product.product_data.image_file_path|make_media }}" alt="Order item image">
+                  </td>
+                  <td>{{ order_item.product.product_data.name }}</td>
+                  <td>{{ order_item.count }}</td>
+                  <td>{{ order_item.total() }}</td>
+                  <td>{{ order_item.status }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}
