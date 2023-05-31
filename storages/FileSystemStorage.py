@@ -7,7 +7,13 @@ class FileSystemStorage:
         self.base_url = base_url
 
     def save(self, filename, content):
-        with open(os.path.join(self.path, filename), 'wb') as f:
+        path = os.path.join(self.path, filename)
+        if os.path.exists(path):
+            return
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        with open(path, 'wb') as f:
             f.write(content)
 
     def delete(self, filename):

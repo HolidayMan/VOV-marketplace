@@ -18,3 +18,8 @@ INSERT INTO vov_database.order_item_status (name, id) VALUES ('in_process', 1);
 INSERT INTO vov_database.order_item_status (name, id) VALUES ('declined', 3);
 INSERT INTO vov_database.order_item_status (name, id) VALUES ('accepted', 2);
 
+
+# Adding statuses for requests
+INSERT INTO vov_database.request_status (name, id) VALUES ('in_process', 1);
+INSERT INTO vov_database.request_status (name, id) VALUES ('accepted', 2);
+INSERT INTO vov_database.request_status (name, id) VALUES ('declined', 3);

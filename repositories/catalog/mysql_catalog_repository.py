@@ -11,7 +11,7 @@ def map_row_to_product(row) -> Product:
     return Product(
         id=PositiveInt(row['id']),
         price=Money(row['price'], 'UAH'),
-        shop_id=PositiveInt(row['seller_id']),
+        shop=PositiveInt(row['seller_id']),
         product_data=ProductData(
             id=PositiveInt(row['product_data_id']),
             name=row['name'],

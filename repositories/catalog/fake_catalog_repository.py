@@ -4,35 +4,35 @@ from domain.product import Category, Product, ProductData
 
 
 class FakeAsyncCatalogRepository(AsyncCatalogRepository):
-    products_food = [
-        Product(
-            price=Money(5, "USD"),
-            id=1,
-            shop_id=1,
-            product_data=ProductData(**{
-                "id": 1,
-                "name": "Apple",
-                "description": "Very tasty",
-                "image_file_path": "/apple.jpg",
-                "approved": True
-            })
-        )
-    ]
-
-    products_tools = [
-        Product(
-            price=Money(15, "USD"),
-            id=2,
-            shop_id=2,
-            product_data=ProductData(**{
-                "id": 2,
-                "name": "Screwdriver",
-                "description": "Very screw",
-                "image_file_path":  "/screwdriver.png",
-                "approved": True
-            })
-        )
-    ]
+    # products_food = [
+    #     Product(
+    #         price=Money(5, "USD"),
+    #         id=1,
+    #         shop=1,
+    #         product_data=ProductData(**{
+    #             "id": 1,
+    #             "name": "Apple",
+    #             "description": "Very tasty",
+    #             "image_file_path": "/apple.jpg",
+    #             "approved": True
+    #         })
+    #     )
+    # ]
+    #
+    # products_tools = [
+    #     Product(
+    #         price=Money(15, "USD"),
+    #         id=2,
+    #         shop=2,
+    #         product_data=ProductData(**{
+    #             "id": 2,
+    #             "name": "Screwdriver",
+    #             "description": "Very screw",
+    #             "image_file_path":  "/screwdriver.png",
+    #             "approved": True
+    #         })
+    #     )
+    # ]
 
     categories = [
         Category(**{
