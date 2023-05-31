@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from db import DEFAULT_SESSION_FACTORY
+from db import DEFAULT_SESSION_FACTORY, AsyncSession
 
 
 class AsyncUnitOfWork(ABC):
@@ -23,7 +23,7 @@ class AsyncUnitOfWork(ABC):
 class MySQLAsyncUnitOfWork(AsyncUnitOfWork, ABC):
     """
     Example of inheritance:
-    class MySQLAsyncUserUnitOfWork(MySQLAsyncUnitOfWork):
+    class MySQLAsyncProductCreationRequestUnitOfWork(MySQLAsyncUnitOfWork):
         users: MySQLUserRepository
 
         async def __aenter__(self):
@@ -33,7 +33,7 @@ class MySQLAsyncUnitOfWork(AsyncUnitOfWork, ABC):
     """
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
-        self.session = None
+        self.session: AsyncSession | None = None
 
     async def __aexit__(self, *args):
         await super().__aexit__(*args)

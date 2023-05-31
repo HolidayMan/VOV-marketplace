@@ -14,7 +14,6 @@ def map_row_to_cart_item(row) -> CartItem:
         product=Product(
             id=PositiveInt(row['product_id']),
             price=Money(row['product.price'], 'UAH'),
-            shop_id=PositiveInt(row['seller_id']),
             product_data=ProductData(
                 id=PositiveInt(row['product_data_id']),
                 name=row['name'],

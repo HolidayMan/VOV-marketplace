@@ -1,8 +1,9 @@
-from pydantic import BaseModel
-from pydantic.types import PositiveInt
+from pydantic import BaseModel, PositiveInt
 from enum import Enum
 from datetime import datetime
-from domain.shop import ShopData
+
+from domain.product import ProductData
+from .shop import ShopData
 from domain.user import User
 
 
@@ -13,9 +14,9 @@ class RequestStatus(Enum):
 
 
 class Request(BaseModel):
-    id: PositiveInt
+    id: PositiveInt | None
     seller_id: User
-    moderator_id: User
+    moderator_id: User | None
     request_status: RequestStatus
     refuse_reason: str | None = None
     creation_date: datetime
@@ -24,3 +25,7 @@ class Request(BaseModel):
 
 class ShopCreationRequest(Request):
     shop_data: ShopData
+
+
+class ProductCreationRequest(Request):
+    product_data: ProductData
