@@ -1,10 +1,13 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark">
+<nav class="navbar navbar-expand navbar-dark bg-dark px-md-3">
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" href="/loadShopForm" target="content">Create Shop</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/loadShop" target="content">View Shop</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('create-product') }}" target="content">Add product</a>
         </li>
     </ul>
 </nav>

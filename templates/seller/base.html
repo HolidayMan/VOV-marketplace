@@ -6,6 +6,7 @@
     <link href="{{ "css/bootstrap.min.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
     <link href="{{ "css/style.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
     <link href="{{ "css/seller/main.css"|make_static }}" rel="stylesheet" crossorigin="anonymous">
+    {% block css %}{% endblock %}
     <script src="{{ "js/bootstrap.bundle.min.js"|make_static }}"></script>
 </head>
 <body>
@@ -15,5 +16,6 @@
             <h2>Hello</h2>
         {% endblock %}
     </div>
+    {% block js %}{% endblock %}
 </body>
 </html>

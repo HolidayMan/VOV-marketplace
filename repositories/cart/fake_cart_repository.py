@@ -44,7 +44,7 @@ FAKE_CART_REPO = FakeAsyncCartRepository(db={
             product=Product(
                 id=1,
                 price=Money(2, "USD"),
-                shop_id=1,
+                shop=1,
                 product_data=ProductData(
                     id=1,
                     name="Apple",
@@ -60,7 +60,7 @@ FAKE_CART_REPO = FakeAsyncCartRepository(db={
             product=Product(
                 id=2,
                 price=Money(3, "USD"),
-                shop_id=1,
+                shop=1,
                 product_data=ProductData(
                     id=2,
                     name="Spiduh",

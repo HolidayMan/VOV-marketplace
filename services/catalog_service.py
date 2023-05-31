@@ -1,5 +1,6 @@
 from pymysql import DatabaseError
 
+
 from domain.product import Product, Category
 from services.exceptions import DataAccessError
 from services.uow.catalog.catalog_unit_of_work import AbstractCatalogUnitOfWork

@@ -49,7 +49,7 @@ async def require_auth(user: UserInDB | None = Depends(get_current_user)) -> Use
 
 def require_role(role: UserRole):
     async def wrapper(user: UserInDB = Depends(get_current_user)) -> UserInDB:
-        if user.role != role:
+        if not user or user.role != role:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
         return user
     return wrapper
