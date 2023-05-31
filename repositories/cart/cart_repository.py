@@ -22,3 +22,7 @@ class AsyncCartRepository(ABC):
     @abstractmethod
     async def update_cart_items_prices(self, user: User):
         pass
+
+    @abstractmethod
+    async def remove_all_cart_items(self, user: User):
+        pass
