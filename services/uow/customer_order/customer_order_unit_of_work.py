@@ -1,7 +1,7 @@
 from abc import ABC
 
-from repositories.customer_order.customer_order_repository import AsyncCustomerOrderRepository
-from repositories.customer_order.mysql_customer_order_repository import MySQLAsyncCustomerOrderRepository
+from repositories.order.customer_order.customer_order_repository import AsyncCustomerOrderRepository
+from repositories.order.customer_order.mysql_customer_order_repository import MySQLAsyncCustomerOrderRepository
 from services.unit_of_work import MySQLAsyncUnitOfWork
 
 

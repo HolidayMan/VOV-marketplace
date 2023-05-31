@@ -21,7 +21,7 @@
                   <td>{{ order.total() }}</td>
                   <td>{{ order.status.name }}</td>
                   <td>
-                    <a class="btn btn-success" href="{{ '/loadOrder/?orderId=%s'%order.id }}" role="button">View details</a>
+                    <a class="btn btn-success" href="{{ url_for("loadOrder") }}?orderId={{ order.id }}" role="button">View details</a>
                   </td>
                 </tr>
               {% endfor %}

@@ -13,8 +13,6 @@ INSERT INTO vov_database.order_status (name) VALUES ('in_process');
 INSERT INTO vov_database.order_status (name) VALUES ('closed');
 INSERT INTO vov_database.order_status (name) VALUES ('canceled');
 
-
-
 # Adding statuses for order items
 INSERT INTO vov_database.order_item_status (name) VALUES ('in_process');
 INSERT INTO vov_database.order_item_status (name) VALUES ('accepted');

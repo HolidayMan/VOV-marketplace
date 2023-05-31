@@ -35,7 +35,7 @@ async def add_product(request: Request,
     await form.load_data()
     if await form.is_valid():
         try:
-            await service.add_product(user, await form.get_product_id(), await form.get_product_id())
+            await service.add_product(user, await form.get_product_id(), await form.get_count())
             return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
         except DataAccessError:
             return render(request, "data_access_error.html", {})

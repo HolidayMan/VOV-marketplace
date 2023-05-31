@@ -1,13 +1,11 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, Request, Form, status
+from fastapi import APIRouter, Depends, Request, status
 from pydantic import PositiveInt
 from starlette.responses import RedirectResponse
 
 from app import app
 from dependencies.auth import require_auth, require_role, get_user
 from domain.user import UserRole, User
-from repositories.customer_order.exceptions import OrderDoesNotExist
+from repositories.order.exceptions import OrderDoesNotExist
 from services.customer_order_service import CustomerOrderService
 from services.exceptions import DataAccessError
 from services.uow.cart.cart_unit_of_work import MySQLAsyncCartUnitOfWork
@@ -34,7 +32,7 @@ async def invalid_id_exception_handler(request: Request, exc: InvalidCustomerOrd
     return RedirectResponse(url=f"{router.url_path_for('loadAllOrders')}", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@router.post("/makeOrder", name="makeOrder",
+@router.post("/customer/makeOrder", name="makeOrder",
              dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def make_order(request: Request, user: User = Depends(get_user)):
     try:
@@ -46,7 +44,7 @@ async def make_order(request: Request, user: User = Depends(get_user)):
         return render(request, "data_access_error.html", {})
 
 
-@router.get("/previewOrder", name="previewOrder",
+@router.get("/customer/previewOrder", name="previewOrder",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def preview_order(request: Request, user: User = Depends(get_user)):
     try:
@@ -58,7 +56,7 @@ async def preview_order(request: Request, user: User = Depends(get_user)):
         return render(request, "data_access_error.html", {})
 
 
-@router.get("/loadAllOrders", name="loadAllOrders",
+@router.get("/customer/loadAllOrders", name="loadAllOrders",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def load_all_orders(request: Request, user: User = Depends(get_user)):
     try:
@@ -68,7 +66,7 @@ async def load_all_orders(request: Request, user: User = Depends(get_user)):
         return render(request, "data_access_error.html", {})
 
 
-@router.get("/loadOrder/", name="loadOrder",
+@router.get("/customer/loadOrder/", name="loadOrder",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def load_order(request: Request, orderId: PositiveInt = Depends(validate_order_id), user: User = Depends(get_user)):
     try:

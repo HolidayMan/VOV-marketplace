@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from pydantic import PositiveInt
-from pymysql import ProgrammingError, DatabaseError
+from pymysql import DatabaseError
 
 from domain.cart import CartItem
 from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.user import User
-from repositories.customer_order.exceptions import OrderDoesNotExist
+from repositories.order.exceptions import OrderDoesNotExist
 from services.exceptions import DataAccessError
 from services.uow.cart.cart_unit_of_work import AbstractCartUnitOfWork
 from services.uow.customer_order.customer_order_unit_of_work import AbstractCustomerOrderUnitOfWork

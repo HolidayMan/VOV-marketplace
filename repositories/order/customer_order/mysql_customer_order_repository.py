@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from money import Money
 from pydantic import PositiveInt
 
@@ -7,9 +5,9 @@ from db import AsyncSession
 from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.product import Product, ProductData
 from domain.user import User
-from repositories.customer_order.customer_order_repository import AsyncCustomerOrderRepository
-from repositories.customer_order.exceptions import OrderDoesNotExist
-from repositories.customer_order.sql import CREATE_ORDER, CREATE_ORDER_ITEM, GET_ORDER_BY_ID, \
+from repositories.order.customer_order.customer_order_repository import AsyncCustomerOrderRepository
+from repositories.order.exceptions import OrderDoesNotExist
+from repositories.order.customer_order.sql import CREATE_ORDER, CREATE_ORDER_ITEM, GET_ORDER_BY_ID, \
     GET_ORDER_ITEMS_BY_ORDER_ID, GET_ORDER_IDS_FOR_USER
 
 DATE_TIME_FORMAT_STR = '%Y-%m-%d %H:%M:%S'
