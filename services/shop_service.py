@@ -19,7 +19,7 @@ class ShopService:
         try:
             has_shop = await self.check_seller_has_shop(seller)
             if has_shop:
-                raise DataAccessError("Seller already has a shop")
+                raise CannotCreateShopError("Seller already has a shop")
             else:
                 shop = Shop(id=seller.id,
                             shop_data=ShopData(name=name, description=description, approved=False))
@@ -32,7 +32,7 @@ class ShopService:
         except IntegrityError:
             raise CannotCreateShopError("Seller already has a shop")
 
-    async def get_shop_by_seller(self, seller: User):
+    async def get_shop_by_seller(self, seller: User) -> Shop | None:
         try:
             async with self._ouw:
                 shop = await self._ouw.shop.get_shop_by_seller(seller)

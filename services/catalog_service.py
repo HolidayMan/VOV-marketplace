@@ -1,4 +1,5 @@
-from pymysql import ProgrammingError
+from pymysql import DatabaseError
+
 
 from domain.product import Product, Category
 from services.exceptions import DataAccessError
@@ -19,13 +20,13 @@ class CatalogService:
                     return await self._uow.catalog.get_catalog_items_with_category(category_name)
                 else:
                     return await self._uow.catalog.get_catalog_items()
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")
 
     async def get_categories(self) -> list[Category]:
         try:
             async with self._uow:
                 return await self._uow.catalog.get_categories()
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")
 

@@ -42,6 +42,9 @@ class AsyncSession:
     def cursor(self) -> _AsyncCursorManager:
         return _AsyncCursorManager(self._conn, self._cursor_type)
 
+    async def get_cursor(self) -> aiomysql.Cursor:
+        return await self._conn.cursor(self._cursor_type)
+
     async def commit(self):
         await self._conn.commit()
 
@@ -50,6 +53,10 @@ class AsyncSession:
 
     def close(self):
         self._conn.close()
+
+    @property
+    def is_active(self):
+        return not self._conn.closed
 
     def __del__(self):
         if self._auto_close:
