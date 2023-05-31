@@ -23,3 +23,7 @@ UPDATE_CART_ITEMS_PRICES = """
 UPDATE cart_item SET cart_item.price = (SELECT product.price FROM product WHERE product.id = cart_item.product_id)
 WHERE cart_item.customer_id = %s
 """
+
+DELETE_ALL_CART_ITEMS_BY_USER_ID = """
+DELETE FROM cart_item WHERE cart_item.customer_id = %s;
+"""

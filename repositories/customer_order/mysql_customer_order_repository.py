@@ -20,8 +20,8 @@ def map_row_to_order(row) -> Order:
         user_id=PositiveInt(row['customer_id']),
         id=PositiveInt(row['id']),
         order_items=[],
-        status=OrderStatus[row['status_name']],
-        creation_date=datetime.strptime(row['creation_date'], DATE_TIME_FORMAT_STR)
+        status=OrderStatus(row['status_name']),
+        creation_date=row['creation_date']
     )
 
 
@@ -32,19 +32,19 @@ def map_rows_to_order_items_list(item_rows) -> list[OrderItem]:
             refuse_reason=row['refuse_reason'],
             product=Product(
                 id=PositiveInt(row['product_id']),
-                price=Money(row['product.price'], 'UAH'),
+                price=Money(row['product_price'], 'UAH'),
                 shop_id=PositiveInt(row['seller_id']),
                 product_data=ProductData(
                     id=PositiveInt(row['product_data_id']),
-                    name=row['product_data.name'],
+                    name=row['name'],
                     description=row['description'],
                     image_file_path=row['image_file_path'],
                     approved=row['approved']
                 )
             ),
-            price=Money(row['order_item.price'], 'UAH'),
-            check_date=datetime.strptime(row['check_date'], DATE_TIME_FORMAT_STR),
-            status=OrderItemStatus(row['order_item_status.name']),
+            price=Money(row['item_price'], 'UAH'),
+            check_date=row['check_date'],
+            status=OrderItemStatus(row['status_name']),
             count=PositiveInt(row['count'])
         )
         items_list.append(item)
@@ -71,7 +71,7 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                 (user.id,)
             )
             orders_list = []
-            if ids_rows := cursor.fetchall():
+            if ids_rows := await cursor.fetchall():
                 ids = map_ids_rows_to_ids_list(ids_rows)
                 for order_id in ids:
                     orders_list.append(await self.get_order(order_id))
@@ -83,7 +83,7 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                 GET_ORDER_BY_ID,
                 (orderId,)
             )
-            if order_row := await cursor.fetchall():
+            if order_row := await cursor.fetchone():
                 order = map_row_to_order(order_row)
                 await cursor.execute(
                     GET_ORDER_ITEMS_BY_ORDER_ID,

@@ -10,6 +10,7 @@ class OrderItemStatus(Enum):
     IN_PROCESS = "in_process"
     ACCEPTED = "accepted"
     DECLINED = "declined"
+    CANCELED = "canceled"
 
 
 class OrderItem(BaseModel):

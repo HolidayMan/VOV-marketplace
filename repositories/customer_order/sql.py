@@ -18,8 +18,10 @@ FROM `order` AS ord JOIN order_status ON ord.status_id = order_status.id WHERE o
 """
 
 GET_ORDER_ITEMS_BY_ORDER_ID = """
-SELECT * FROM order_item JOIN product ON order_item.product_id = product.id
+SELECT order_id, `count`, order_item.price AS item_price, refuse_reason, check_date, product_data_id,
+       product.price AS product_price, product_id, seller_id, product_data.name AS name, description, approved,
+       image_file_path, order_item_status.name as status_name FROM order_item JOIN product ON order_item.product_id = product.id
 JOIN product_data ON product.product_data_id = product_data.id
 JOIN order_item_status ON order_item.status_id = order_item_status.id
-WHERE order_item.order_id = 10;
+WHERE order_item.order_id = %s;
 """

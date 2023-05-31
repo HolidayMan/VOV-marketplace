@@ -5,7 +5,7 @@ from domain.cart import CartItem
 from domain.product import Product, ProductData
 from domain.user import User
 from repositories.cart.sql import SELECT_CART_ITEMS, INSERT_CART_ITEM, DELETE_CART_ITEM, GET_CART_ITEM, \
-    UPDATE_CART_ITEMS_PRICES
+    UPDATE_CART_ITEMS_PRICES, DELETE_ALL_CART_ITEMS_BY_USER_ID
 from repositories.cart.cart_repository import AsyncCartRepository
 
 
@@ -98,3 +98,10 @@ class MySQLAsyncCartRepository(AsyncCartRepository):
             )
             await self.session.commit()
 
+    async def remove_all_cart_items(self, user: User):
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                DELETE_ALL_CART_ITEMS_BY_USER_ID,
+                (user.id,)
+            )
+            await self.session.commit()

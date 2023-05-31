@@ -1,11 +1,12 @@
 from datetime import datetime
 
 from pydantic import PositiveInt
-from pymysql import ProgrammingError
+from pymysql import ProgrammingError, DatabaseError
 
 from domain.cart import CartItem
 from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.user import User
+from repositories.customer_order.exceptions import OrderDoesNotExist
 from services.exceptions import DataAccessError
 from services.uow.cart.cart_unit_of_work import AbstractCartUnitOfWork
 from services.uow.customer_order.customer_order_unit_of_work import AbstractCustomerOrderUnitOfWork
@@ -39,6 +40,7 @@ class CustomerOrderService:
     async def make_order(self, user: User) -> Order:
         try:
             order: Order
+            order_in_db: Order
             async with self._cart_uow:
                 cart_items = await self._cart_uow.cart_items.get_cart_items(user)
                 order_items = make_order_items_from_cart_items(cart_items)
@@ -49,15 +51,29 @@ class CustomerOrderService:
                               creation_date=datetime.now(),)
             async with self._order_uow:
                 order_in_db = await self._order_uow.orders.add_order(order)
+            async with self._cart_uow:
+                await self._cart_uow.cart_items.remove_all_cart_items(user)
                 return order_in_db
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")
 
     async def get_all_orders(self, user: User) -> list[Order]:
-        pass
+        try:
+            async with self._order_uow:
+                orders = await self._order_uow.orders.get_all_orders(user)
+                return orders
+        except DatabaseError:
+            raise DataAccessError("Data access error")
 
-    async def get_order(self, orderId: PositiveInt) -> Order:
-        pass
+    async def get_order(self, orderId: int) -> Order:
+        if orderId < 1:
+            raise OrderDoesNotExist("Order does not exist")
+        try:
+            async with self._order_uow:
+                order = await self._order_uow.orders.get_order(orderId)
+                return order
+        except DatabaseError:
+            raise DataAccessError("Data access error")
 
     async def get_order_preview(self, user: User) -> Order:
         try:
@@ -71,7 +87,7 @@ class CustomerOrderService:
                               status=OrderStatus.IN_PROCESS,
                               creation_date=datetime.now(),)
                 return order
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")
 
     async def can_make_order(self, user: User) -> bool:
@@ -82,5 +98,5 @@ class CustomerOrderService:
                     return True
                 else:
                     return False
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")

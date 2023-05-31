@@ -6,6 +6,7 @@ from app import app
 
 from dependencies.auth import get_user, require_auth, require_role
 from domain.user import User, UserRole
+from forms.id_form import IdForm
 from forms.product_count_form import ProductCountForm
 from services.cart_service import CartService
 from services.exceptions import DataAccessError
@@ -34,7 +35,7 @@ async def add_product(request: Request,
     await form.load_data()
     if await form.is_valid():
         try:
-            await service.add_product(user, form.product_id, form.count)
+            await service.add_product(user, await form.get_product_id(), await form.get_product_id())
             return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
         except DataAccessError:
             return render(request, "data_access_error.html", {})
@@ -44,11 +45,16 @@ async def add_product(request: Request,
 @router.post("/removeItemFromCart", name="removeItemFromCart",
              dependencies=[Depends(require_auth),
                            Depends(require_role(UserRole.CUSTOMER))])
-async def remove_item(request: Request, productId: Annotated[PositiveInt, Form()], user: User = Depends(get_user)):
-    try:
-        await service.remove_item(user, productId)
-        items = await service.get_cart_items(user)
-        return render(request, "customer/cart.html",
-                      {"items_list": items})
-    except DataAccessError:
-        return render(request, "data_access_error.html", {})
+async def remove_item(request: Request, user: User = Depends(get_user)):
+    form = IdForm(request, "productId")
+    await form.load_data()
+    if await form.is_valid():
+        try:
+            await service.remove_item(user, await form.get_id())
+            items = await service.get_cart_items(user)
+            return render(request, "customer/cart.html",
+                          {"items_list": items})
+        except DataAccessError:
+            return render(request, "data_access_error.html", {})
+    else:
+        return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
