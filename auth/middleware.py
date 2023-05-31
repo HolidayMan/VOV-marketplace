@@ -1,13 +1,15 @@
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from .router import router
+from urllib.parse import quote_plus
 from app import app
 
 
 async def process_unauthorized_error(request: Request, call_next):
     response = await call_next(request)
     if response.status_code == 401:
-        response = RedirectResponse(url=router.url_path_for("login"), status_code=302)
+        response = RedirectResponse(url=f"{router.url_path_for('login')}?next={quote_plus(str(request.url))}",
+                                    status_code=302)
     return response
 
 

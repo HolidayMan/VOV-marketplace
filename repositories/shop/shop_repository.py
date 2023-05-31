@@ -3,12 +3,12 @@ from domain.shop import Shop, ShopData
 from domain.user import User
 
 
-class ShopRepository(ABC):
+class AsyncShopRepository(ABC):
 
     @abstractmethod
-    def create_shop(self, shop: Shop) -> Shop:
+    async def create_shop(self, shop: Shop) -> Shop:
         pass
 
     @abstractmethod
-    def get_shop(self, seller: User) -> Shop:
+    async def get_shop_by_seller(self, seller: User) -> Shop:
         pass

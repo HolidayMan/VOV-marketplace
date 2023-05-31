@@ -1,0 +1,9 @@
+{% extends 'seller/base.html' %}
+{% block content %}
+    <div class="container pt-5">
+    <h3>Hey! You have already shop)))</h3>
+        <button class="button-redirect mt-5">
+            <a href="{{ url_for('loadShop') }}" >Check your Shop</a>
+        </button>
+    </div>
+{% endblock %}

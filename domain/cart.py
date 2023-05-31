@@ -16,5 +16,4 @@ class CartItem(BaseModel):
         arbitrary_types_allowed = True
 
     def total(self) -> Money:
-
         return self.product.price * self.count

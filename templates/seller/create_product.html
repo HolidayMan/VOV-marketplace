@@ -1,0 +1,63 @@
+{% extends 'seller/base.html' %}
+{% block content %}
+    <h1>Create product:</h1>
+    <form class="mb-3" method="POST" action="{{ url_for('create-product') }}" enctype="multipart/form-data">
+        {#        self.price: str | None = None#}
+        {#        self.name: str | None = None#}
+        {#        self.description: str | None = None#}
+        {#        self.image_data: bytes | None = None#}
+        {#        self.categories: list[PositiveInt] | None = None#}
+        <div class="form-group">
+            <label for="name">Product name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter product name">
+            {% if form is defined and form.errors.get('name') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.errors.get('name') }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="description">Product description:</label>
+            <textarea class="form-control" id="description" name="description"
+                      placeholder="Enter product description"></textarea>
+            {% if form is defined and form.errors.get('description') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.errors.get('description') }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="image">Product image:</label>
+            <input type="file" accept=".png,.jpg,.jpeg,.svg" class="form-control" id="image" name="image"
+                   placeholder="Enter product image">
+            {% if form is defined and form.errors.get('image_data') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.errors.get('image_data') }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="price">Product price:</label>
+            <input type="text" class="form-control" id="price" name="price" placeholder="Enter product price">
+            {% if form is defined and form.errors.get('price') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.errors.get('price') }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="categories">Product categories:</label>
+            <select multiple class="form-control" id="categories" name="categories">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {% if form is defined and form.errors.get('categories') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.errors.get('categories') }}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+{% endblock %}
