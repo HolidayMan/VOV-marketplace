@@ -38,16 +38,12 @@ class MySQLAsyncShopRepository(AsyncShopRepository):
         return shop
 
     async def get_shop_by_seller(self, seller: User) -> Shop | None:
-        print("hiiii")
         async with self.session.cursor() as cursor:
             await cursor.execute(
                 SELECT_SHOP_BY_SELLER,
                 (seller.id,)
             )
-            print("i am here")
             if show_row := await cursor.fetchone():
-                print("i still here")
                 shop = map_row_to_shop(show_row)
-                print("everything fine!")
                 return shop
         return None  # no shop for specific seller
