@@ -2,12 +2,12 @@
 {% block content %}
     <div  class="container pt-5">
         <h2>Create Shop</h2>
-        <form class="mb-3" method="POST" action="/createShop">
-            <label class="form-label" for="name">Shop Name:{{ name }}</label>
+        <form class="mb-3" method="POST" action="{{ url_for("createShop") }}">
+            <label class="form-label" for="name">Shop Name:</label>
             <input type="text" class="form-control" id="name" name="name" required><br>
-            <label class="form-label" for="description">Description:{{ description }}</label>
+            <label class="form-label" for="description">Description:</label>
             <textarea type="text" class="form-control" id="description" name="description" required></textarea><br><br>
-            <input class="button" type="submit" value="Create Shop">
+            <input class="button" type="submit" value="Submit to create">
         </form>
     </div>
 {% endblock %}

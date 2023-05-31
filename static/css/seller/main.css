@@ -31,7 +31,7 @@
 }
 
 .button:hover {
-  color: #212121;
+  color: darksalmon;
   scale:1.1;
   box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
 }
@@ -39,7 +39,36 @@
 .button:active{
     scale:1;
 }
+/*--BUTTON REDIRECT --*/
+.button-redirect {
+  padding: 1.2em 1.8em;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #f2b091;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
 
+.button-redirect:hover {
+  background-color: darkorange;
+  box-shadow: 0px 15px 20px rgba(199, 75, 18);
+  color: bisque;
+  transform: translateY(-7px);
+}
 
+.button-redirect:active {
+  transform: translateY(-1px);
+}
 
-
+.button-redirect a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
