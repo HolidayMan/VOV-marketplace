@@ -10,6 +10,7 @@ class OrderItemStatus(Enum):
     IN_PROCESS = "in_process"
     ACCEPTED = "accepted"
     DECLINED = "declined"
+    CANCELED = "canceled"
 
 
 class OrderItem(BaseModel):
@@ -42,7 +43,7 @@ class Order(BaseModel):
     creation_date: datetime
 
     def total(self) -> Money:
-        total_cost = Money()
+        total_cost = Money(0, "UAH")
         for item in self.order_items:
             total_cost += item.total()
         return total_cost

@@ -1,5 +1,5 @@
 from pydantic import PositiveInt
-from pymysql import ProgrammingError
+from pymysql import DatabaseError
 
 from domain.cart import CartItem
 from domain.user import User
@@ -40,6 +40,6 @@ class CartService:
     async def wrapper(self, method, *args, **kwargs):
         try:
             return await method(*args, **kwargs)
-        except ProgrammingError:
+        except DatabaseError:
             raise DataAccessError("Data access error")
 

@@ -48,8 +48,8 @@
                             <label class="form-label" for="count">
                                 Enter product count
                             </label>
-                            <input class="form-control" id="count" name="count" placeholder="Enter count" type="number">
-                            <input type="hidden" id="productId" name="productId" value="{{ product.id }}"/>
+                            <input class="form-control" id="count" name="count" placeholder="Enter count" type="number" min="1" value="1">
+                            <input type="hidden" id="product_id" name="product_id" value="{{ product.id }}"/>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

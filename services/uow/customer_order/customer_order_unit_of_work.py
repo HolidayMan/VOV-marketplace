@@ -13,5 +13,5 @@ class MySQLAsyncCustomerOrderUnitOfWork(MySQLAsyncUnitOfWork, AbstractCustomerOr
 
     async def __aenter__(self):
         self.session = await self.session_factory()
-        self.catalog = MySQLAsyncCustomerOrderRepository(self.session)
+        self.orders = MySQLAsyncCustomerOrderRepository(self.session)
         await super().__aenter__()

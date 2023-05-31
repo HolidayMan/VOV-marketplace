@@ -1,10 +1,11 @@
 {% extends 'customer/base.html' %}
 {% block content %}
     <div class="container m-2">
-        <h1>Order preview</h1>
-    <br>
         {% if order is defined %}
+            <h2>Your order</h2>
             <h3>Total cost: {{ order.total() }}</h3>
+            <h3>Creation date: {{ order.creation_date }}</h3>
+            <h3>Order status: {{ order.status }}</h3>
             <table class="table">
               <thead>
                 <tr>
@@ -12,6 +13,7 @@
                   <th scope="col">Name</th>
                   <th scope="col">Count</th>
                   <th scope="col">Cost</th>
+                  <th scope="col">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -23,15 +25,11 @@
                   <td>{{ order_item.product.product_data.name }}</td>
                   <td>{{ order_item.count }}</td>
                   <td>{{ order_item.total() }}</td>
+                  <td>{{ order_item.status }}</td>
                 </tr>
               {% endfor %}
               </tbody>
             </table>
-            <form method="post" action="{{ url_for("makeOrder") }}">
-                <div class="d-grid gap-2 col-6 mx-auto">
-                    <button type="submit" class="btn btn-success align-center">Submit order</button>
-                </div>
-            </form>
         {% endif %}
     </div>
 {% endblock %}
