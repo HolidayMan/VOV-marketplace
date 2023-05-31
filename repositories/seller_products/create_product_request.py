@@ -12,7 +12,6 @@ from .sql import INSERT_PRODUCT_DATA, INSERT_ADD_PRODUCT_REQUEST, INSERT_PRODUCT
 
 class ProductWithShopId(Product):
     shop_id: PositiveInt
-    shop: None = None
 
 
 class ProductWithShopIdAndCategoriesIds(ProductWithShopId):

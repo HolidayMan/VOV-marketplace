@@ -18,7 +18,6 @@ class ProductData(BaseModel):
 class Product(BaseModel):
     id: PositiveInt | None
     price: Money
-    shop: Shop
     product_data: ProductData
 
     class Config:
