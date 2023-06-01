@@ -1,18 +1,22 @@
 from datetime import datetime
 
+from pydantic import PositiveInt
 from starlette.datastructures import UploadFile
 
 from auth.models import UserInDB
-from domain.product import ProductData
+from domain.product import ProductData, ProductWithCategories, Product
 from domain.request import ProductCreationRequest, RequestStatus
+from repositories.exceptions import DoesNotExistError
 from repositories.seller_products.create_product_request import ProductWithShopIdAndCategoriesIds
-from services.uow.seller_product import AsyncProductCreationRequestUnitOfWork
+from services.exceptions import ProductDoesNotExistError
+from services.product_management.exceptions import NotOwnerError
+from services.uow.seller_product import AsyncProductManagementUnitOfWork
 from settings import DEFAULT_FILE_STORAGE
 from utils.images import get_product_image_name
 
 
 class ProductManagementService:
-    def __init__(self, uow: AsyncProductCreationRequestUnitOfWork, file_storage=DEFAULT_FILE_STORAGE):
+    def __init__(self, uow: AsyncProductManagementUnitOfWork, file_storage=DEFAULT_FILE_STORAGE):
         self.uow = uow
         self.file_storage = file_storage
 
@@ -43,3 +47,17 @@ class ProductManagementService:
                 categories_ids=data['categories']
             ))
             await self.uow.commit()
+
+    async def get_products(self, seller: UserInDB) -> list[tuple[Product, RequestStatus]]:
+        async with self.uow:
+            return await self.uow.products.get_products_by_seller_id(seller.id)
+
+    async def get_product(self, product_id: int, seller: UserInDB) -> tuple[ProductWithCategories, RequestStatus]:
+        async with self.uow:
+            try:
+                product, status, seller_id = await self.uow.products.get_product_by_id(product_id)
+            except DoesNotExistError:
+                raise ProductDoesNotExistError("Product does not exist")
+            if seller_id != seller.id:
+                raise NotOwnerError("Seller is not owner of this product")
+            return product, status

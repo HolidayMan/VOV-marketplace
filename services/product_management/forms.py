@@ -1,7 +1,7 @@
 from money import Money
 from pydantic import PositiveInt
 
-from services.uow.seller_product import AsyncProductCreationRequestUnitOfWork
+from services.uow.seller_product import AsyncProductManagementUnitOfWork
 
 
 class ProductCreateForm:

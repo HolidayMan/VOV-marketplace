@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, ForwardRef
 
 from pydantic import BaseModel
 from pydantic.types import PositiveInt
@@ -24,11 +24,14 @@ class Product(BaseModel):
         arbitrary_types_allowed = True
 
 
-class ProductWithCategories(Product):
-    categories: list['Category']
+Category = ForwardRef('Category')
 
 
 class Category(BaseModel):
     id: PositiveInt
     name: str
-    parent: Optional['Category'] = None
+    parent: Optional[Category] = None
+
+
+class ProductWithCategories(Product):
+    categories: list[Category]

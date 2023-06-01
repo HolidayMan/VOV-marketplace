@@ -1,21 +1,22 @@
 from abc import ABC
 
-from repositories.seller_products.create_product_request import MySQLAsyncCreateProductRequestRepository
+from repositories.seller_products.create_product_request import MySQLAsyncProductManagementRepository, \
+    AsyncProductManagementRepository
 from services.unit_of_work import MySQLAsyncUnitOfWork, AsyncUnitOfWork
 
 
-class AsyncProductCreationRequestUnitOfWork(AsyncUnitOfWork, ABC):
-    products: MySQLAsyncCreateProductRequestRepository
+class AsyncProductManagementUnitOfWork(AsyncUnitOfWork, ABC):
+    products: AsyncProductManagementRepository
 
 
-class MySQLAsyncProductCreationRequestUnitOfWork(MySQLAsyncUnitOfWork, AsyncProductCreationRequestUnitOfWork):
-    products: MySQLAsyncCreateProductRequestRepository
+class MySQLAsyncProductManagementUnitOfWork(MySQLAsyncUnitOfWork, AsyncProductManagementUnitOfWork):
+    products: MySQLAsyncProductManagementRepository
 
     async def __aenter__(self):
         if self.session is None or not self.session.is_active:
             self.session = await self.session_factory()
         self.cursor = await self.session.get_cursor()
-        self.products = MySQLAsyncCreateProductRequestRepository(self.cursor)
+        self.products = MySQLAsyncProductManagementRepository(self.cursor)
         await super().__aenter__()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
