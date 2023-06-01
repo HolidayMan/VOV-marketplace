@@ -17,6 +17,6 @@ class AsyncCustomerOrderRepository(ABC):
         pass
 
     @abstractmethod
-    async def add_order(self, order: Order) -> Order:
+    async def add_order(self, order: Order, user: User) -> Order:
         pass
     

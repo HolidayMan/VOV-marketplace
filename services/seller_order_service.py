@@ -1,19 +1,74 @@
-from pydantic import PositiveInt
+from datetime import datetime
 
-from domain.order import OrderItem
+from pydantic import PositiveInt
+from pymysql import DatabaseError
+
+from domain.order import OrderItemStatus
 from domain.user import User
+from repositories.order.exceptions import CannotProcessOrderItemError
+from repositories.order.seller_order.order import OrderItemWithOrderIdAndCreationDate
+from services.exceptions import DataAccessError
+from services.uow.seller_order.seller_order_unit_of_work import AbstractSellerOrderUnitOfWork
 
 
 class SellerOrderService:
+    _uow: AbstractSellerOrderUnitOfWork
 
-    async def get_ordered_items(self, seller: User) -> list[OrderItem]:
-        pass
+    def __init__(self, unit_of_work: AbstractSellerOrderUnitOfWork):
+        self._uow = unit_of_work
 
-    async def get_ordered_item(self, seller: User, item_id: PositiveInt) -> OrderItem:
-        pass
+    async def get_ordered_items(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
+        try:
+            async with self._uow:
+                items = await self._uow.orders.get_ordered_items_list(seller)
+                return items
+        except DatabaseError:
+            raise DataAccessError("Data access error")
 
-    async def accept_order(self, seller: User, item_id: PositiveInt) -> OrderItem:
-        pass
+    async def get_ordered_item(self, product_id: PositiveInt,
+                               order_id: PositiveInt) -> OrderItemWithOrderIdAndCreationDate:
+        try:
+            async with self._uow:
+                item = await self._uow.orders.get_ordered_item(order_id, product_id)
+                return item
+        except DatabaseError:
+            raise DataAccessError("Data access error")
 
-    async def decline_order(self, seller: User, item_id: PositiveInt, refuse_reason: str) -> OrderItem:
-        pass
+    async def accept_order(self, product_id: PositiveInt,
+                           order_id: PositiveInt) -> OrderItemWithOrderIdAndCreationDate:
+        try:
+            if await self.can_process_order(product_id, order_id):
+                order_item = await self.get_ordered_item(product_id, order_id)
+                async with self._uow:
+                    order_item.status = OrderItemStatus.ACCEPTED
+                    order_item.check_date = datetime.now()
+                    await self._uow.orders.update_order_item(order_item)
+                    await self._uow.commit()
+                    return order_item
+            raise CannotProcessOrderItemError("Cannot accept order item as its status is not IN_PROCESS")
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+
+    async def decline_order(self, product_id: PositiveInt,
+                            order_id: PositiveInt, refuse_reason: str) -> OrderItemWithOrderIdAndCreationDate:
+        try:
+            if await self.can_process_order(product_id, order_id):
+                order_item = await self.get_ordered_item(product_id, order_id)
+                async with self._uow:
+                    order_item.status = OrderItemStatus.DECLINED
+                    order_item.check_date = datetime.now()
+                    order_item.refuse_reason = refuse_reason
+                    await self._uow.orders.update_order_item(order_item)
+                    await self._uow.commit()
+                    return order_item
+            raise CannotProcessOrderItemError("Cannot decline order item as its status is not IN_PROCESS")
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+
+    async def can_process_order(self, product_id: PositiveInt, order_id: PositiveInt) -> bool:
+        try:
+            async with self._uow:
+                item = await self._uow.orders.get_ordered_item(order_id, product_id)
+                return item.can_be_processed()
+        except DatabaseError:
+            raise DataAccessError("Data access error")

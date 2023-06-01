@@ -5,7 +5,7 @@ from starlette.responses import RedirectResponse
 from app import app
 from dependencies.auth import require_auth, require_role, get_user
 from domain.user import UserRole, User
-from repositories.order.exceptions import OrderDoesNotExist
+from repositories.order.exceptions import OrderDoesNotExistError
 from services.customer_order_service import CustomerOrderService
 from services.exceptions import DataAccessError
 from services.uow.cart.cart_unit_of_work import MySQLAsyncCartUnitOfWork
@@ -74,5 +74,5 @@ async def load_order(request: Request, orderId: PositiveInt = Depends(validate_o
         return render(request, "customer/view_order.html", {"order": order})
     except DataAccessError:
         return render(request, "data_access_error.html", {})
-    except OrderDoesNotExist:
+    except OrderDoesNotExistError:
         return RedirectResponse(url=f"{router.url_path_for('loadAllOrders')}", status_code=status.HTTP_303_SEE_OTHER)

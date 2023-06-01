@@ -1,12 +1,14 @@
 from starlette.staticfiles import StaticFiles
 
 from auth.middleware import process_unauthorized_error, process_forbidden_error
-from routers import catalog_controller, cart_controller, shop_controller, customer_order_controller, product_management_controller
+from routers import catalog_controller, cart_controller, shop_controller, \
+    customer_order_controller, product_management_controller, seller_order_controller
 from auth.router import router as auth_router
 from settings import STATIC_ROOT, STATIC_URL, MEDIA_ROOT, MEDIA_URL
 from app import app
 
 
+app.include_router(seller_order_controller.router)
 app.include_router(catalog_controller.router)
 app.include_router(cart_controller.router)
 app.include_router(shop_controller.router)

@@ -6,7 +6,7 @@ from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.product import Product, ProductData
 from domain.user import User
 from repositories.order.customer_order.customer_order_repository import AsyncCustomerOrderRepository
-from repositories.order.exceptions import OrderDoesNotExist
+from repositories.order.exceptions import OrderDoesNotExistError
 from repositories.order.customer_order.sql import CREATE_ORDER, CREATE_ORDER_ITEM, GET_ORDER_BY_ID, \
     GET_ORDER_ITEMS_BY_ORDER_ID, GET_ORDER_IDS_FOR_USER
 
@@ -15,7 +15,6 @@ DATE_TIME_FORMAT_STR = '%Y-%m-%d %H:%M:%S'
 
 def map_row_to_order(row) -> Order:
     return Order(
-        user_id=PositiveInt(row['customer_id']),
         id=PositiveInt(row['id']),
         order_items=[],
         status=OrderStatus(row['status_name']),
@@ -31,7 +30,6 @@ def map_rows_to_order_items_list(item_rows) -> list[OrderItem]:
             product=Product(
                 id=PositiveInt(row['product_id']),
                 price=Money(row['product_price'], 'UAH'),
-                shop_id=PositiveInt(row['seller_id']),
                 product_data=ProductData(
                     id=PositiveInt(row['product_data_id']),
                     name=row['name'],
@@ -91,13 +89,13 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                     order_items_list = map_rows_to_order_items_list(order_items_rows)
                     order.order_items = order_items_list
                 return order
-            raise OrderDoesNotExist("There is no order with this id")
+            raise OrderDoesNotExistError("There is no order with this id")
 
-    async def add_order(self, order: Order) -> Order:
+    async def add_order(self, order: Order, user: User) -> Order:
         async with self.session.cursor() as cursor:
             await cursor.execute(
                 CREATE_ORDER,
-                (order.status.name, order.user_id, order.creation_date)
+                (order.status.name, user.id, order.creation_date)
             )
             order.id = PositiveInt(cursor.lastrowid)
             for order_item in order.order_items:
