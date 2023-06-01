@@ -1,0 +1,44 @@
+{% extends 'seller/base.html' %}
+{% block content %}
+    <div class="container pt-3">
+        {% if order_item is defined %}
+            <h2>Ordered item</h2>
+            <hr>
+            <img src="{{ order_item.product.product_data.image_file_path|make_media }}" alt="Order item image">
+            <h3>Total cost: {{ order_item.total() }}</h3>
+            <h3>Count: {{ order_item.count }}</h3>
+            <h3>Creation date: {{ order_item.creation_date }}</h3>
+            <h3>Order status: {{ order_item.status.name }}</h3>
+
+            {% if order_item.can_be_processed() %}
+                <hr>
+                <form method="post" action="{{ url_for('acceptOrder') }}">
+                    <div class="form-group">
+                        <input type="hidden" id="product_id" name="product_id" value="{{ order_item.product.id }}"/>
+                        <input type="hidden" id="order_id" name="order_id" value="{{ order_item.order_id }}"/>
+                    </div>
+                    <button class="btn btn-success" type="submit">Accept order</button>
+                </form>
+                <hr>
+                <form method="post" action="{{ url_for('declineOrder') }}">
+                    <div class="form-group">
+                        <input type="hidden" id="product_id" name="product_id" value="{{ order_item.product.id }}"/>
+                        <input type="hidden" id="order_id" name="order_id" value="{{ order_item.order_id }}"/>
+                        <label for="refuse_reason">Refuse reason:</label>
+                        <textarea class="form-control" id="refuse_reason" name="refuse_reason"
+                                  placeholder="Write a refuse reason if you want to decline this order"></textarea>
+                        {% if form is defined and form.errors.get('refuse_reason') %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.errors.get('refuse_reason') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" type="submit">Decline order</button>
+                </form>
+            {% else %}
+                <h3>Check date: {{ order_item.check_date }}</h3>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

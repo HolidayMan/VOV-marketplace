@@ -8,7 +8,6 @@ from pydantic.types import PositiveInt
 class CartItem(BaseModel):
     product: Product
     count: PositiveInt
-    user_id: PositiveInt | None
     # price field stores the price of a single product item at the moment of ordering
     price: Money | None
 

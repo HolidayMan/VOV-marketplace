@@ -28,6 +28,9 @@ class OrderItem(BaseModel):
     def total(self) -> Money:
         return self.price * self.count
 
+    def can_be_processed(self) -> bool:
+        return self.status == OrderItemStatus.IN_PROCESS
+
 
 class OrderStatus(Enum):
     IN_PROCESS = "in_process"
@@ -36,7 +39,6 @@ class OrderStatus(Enum):
 
 
 class Order(BaseModel):
-    user_id: PositiveInt
     id: PositiveInt | None
     order_items: list[OrderItem]
     status: OrderStatus
@@ -47,6 +49,13 @@ class Order(BaseModel):
         for item in self.order_items:
             total_cost += item.total()
         return total_cost
+
+    def can_be_canceled(self) -> bool:
+        # if at least one item is already accepted by seller, the order can't be canceled
+        for item in self.order_items:
+            if item.status == OrderItemStatus.ACCEPTED:
+                return False
+        return True
 
 
 
