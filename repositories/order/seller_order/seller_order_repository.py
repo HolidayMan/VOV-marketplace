@@ -13,6 +13,10 @@ class AsyncSellerOrderRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_not_processed_ordered_items(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
+        pass
+
+    @abstractmethod
     async def get_ordered_item(self, order_id: PositiveInt,
                                product_id: PositiveInt) -> OrderItemWithOrderIdAndCreationDate:
         pass

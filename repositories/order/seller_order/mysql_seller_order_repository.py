@@ -11,7 +11,7 @@ from repositories.order.order import OrderItemWithOrderIdAndCreationDate
 from repositories.order.seller_order.seller_order_repository import AsyncSellerOrderRepository
 from repositories.order.seller_order.sql import GET_ORDER_ITEMS_BY_SELLER_ID, \
     GET_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS, \
-    UPDATE_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS, GET_SELLER_ID_BY_PRODUCT_ID
+    UPDATE_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS, GET_SELLER_ID_BY_PRODUCT_ID, GET_NOT_PROCESSED_ORDER_ITEMS_BY_SELLER_ID
 
 
 def map_row_to_order_item(row):
@@ -49,6 +49,16 @@ class MySQLAsyncSellerOrderRepository(AsyncSellerOrderRepository):
 
     def __init__(self, cursor: DictCursor):
         self.cursor = cursor
+
+    async def get_not_processed_ordered_items(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
+        await self.cursor.execute(
+            GET_NOT_PROCESSED_ORDER_ITEMS_BY_SELLER_ID,
+            (seller.id,)
+        )
+        if order_items_rows := await self.cursor.fetchall():
+            items_list = map_rows_to_order_items_list(order_items_rows)
+            return items_list
+        return []
 
     async def get_ordered_items_list(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
         await self.cursor.execute(

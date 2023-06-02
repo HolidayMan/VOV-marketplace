@@ -2,9 +2,17 @@
 {% block content %}
     <div class="container m-2">
     <br>
+        <h1>Your orders</h1>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter orders
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for("loadOrderedItems") }}">All orders</a></li>
+                <li><a class="dropdown-item" href="{{ url_for("loadNotProcessedOrderedItems") }}">Not processed orders</a></li>
+            </ul>
+        </div>
         {% if order_items_list is defined and order_items_list|length > 0 %}
-            <h1>Your orders</h1>
-            <hr>
             <table class="table">
               <thead>
                 <tr>
