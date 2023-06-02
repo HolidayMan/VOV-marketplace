@@ -26,6 +26,14 @@ class SellerOrderService:
         except DatabaseError:
             raise DataAccessError("Data access error")
 
+    async def get_not_processed_ordered_items(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
+        try:
+            async with self._uow:
+                items = await self._uow.orders.get_not_processed_ordered_items(seller)
+                return items
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+
     async def get_ordered_item(self, product_id: PositiveInt,
                                order_id: PositiveInt, seller: User) -> OrderItemWithOrderIdAndCreationDate:
         if not await self.product_belongs_to_seller(product_id, seller.id):

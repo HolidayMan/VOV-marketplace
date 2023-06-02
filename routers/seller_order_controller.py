@@ -57,6 +57,14 @@ async def load_ordered_items(request: Request, seller: User = Depends(get_user))
     return render(request, "/seller/ordered_items_list.html", {"order_items_list": items})
 
 
+@router.get("/seller/loadNotProcessedOrderedItems", name="loadNotProcessedOrderedItems",
+            dependencies=[Depends(require_auth),
+                          Depends(require_role(UserRole.SELLER))])
+async def load_not_processed_ordered_items(request: Request, seller: User = Depends(get_user)):
+    items = await service.get_not_processed_ordered_items(seller)
+    return render(request, "/seller/ordered_items_list.html", {"order_items_list": items})
+
+
 @router.get("/seller/getOrderedItem", name="getOrderedItem",
             dependencies=[Depends(require_auth),
                           Depends(require_role(UserRole.SELLER))])
