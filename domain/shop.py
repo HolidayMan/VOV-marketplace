@@ -9,6 +9,7 @@ class ShopData(BaseModel):
 
 
 class Shop(BaseModel):
+    id: PositiveInt | None
     shop_data: ShopData
 
 

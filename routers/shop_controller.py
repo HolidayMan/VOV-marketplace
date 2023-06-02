@@ -9,12 +9,13 @@ from pydantic import PositiveInt
 from services.exceptions import DataAccessError, CannotCreateShopError
 from services.shop_service import ShopService
 from services.uow.shop.shop_unit_of_work import MySQLAsyncShopUnitOfWork
+from services.uow.shop_request.shop_request_unit_of_work import MySQLAsyncSellerShopRequestUnitOfWork
 from utils.templates import render
 from dependencies.auth import get_user, require_auth, require_role
 from domain.user import User, UserRole
 
 router = APIRouter()
-service = ShopService(MySQLAsyncShopUnitOfWork())
+service = ShopService(MySQLAsyncShopUnitOfWork(), MySQLAsyncSellerShopRequestUnitOfWork())
 
 
 @router.post("/createShop", name="createShop",
@@ -32,6 +33,9 @@ async def create_shop(request: Request, name: Annotated[str, Form()],
                                     status_code=status.HTTP_303_SEE_OTHER)
     except DataAccessError:
         return render(request, "data_access_error.html", {})
+    except CannotCreateShopError:
+        return RedirectResponse(url=f"{router.url_path_for('seller_already_has_shop')}",
+                                    status_code=status.HTTP_303_SEE_OTHER)
 
 
 # TODO check if seller has already created shop and his shop request in process.
@@ -39,7 +43,7 @@ async def create_shop(request: Request, name: Annotated[str, Form()],
 
 @router.get("/loadShopForm", name="loadShopForm",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
-async def load_shop_form(request: Request, seller: User = Depends(get_user)):
+async def load_shop_form(request: Request):
     return render(request, "seller/create_shop.html", {})
 
 
