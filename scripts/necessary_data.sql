@@ -27,3 +27,4 @@ INSERT INTO vov_database.order_item_status (name) VALUES ('in_process');
 INSERT INTO vov_database.order_item_status (name) VALUES ('accepted');
 INSERT INTO vov_database.order_item_status (name) VALUES ('declined');
 INSERT INTO vov_database.order_item_status (name) VALUES ('canceled');
+

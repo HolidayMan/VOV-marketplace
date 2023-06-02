@@ -23,7 +23,7 @@ class AsyncUnitOfWork(ABC):
 class MySQLAsyncUnitOfWork(AsyncUnitOfWork, ABC):
     """
     Example of inheritance:
-    class MySQLAsyncProductCreationRequestUnitOfWork(MySQLAsyncUnitOfWork):
+    class MySQLAsyncProductManagementUnitOfWork(MySQLAsyncUnitOfWork):
         users: MySQLUserRepository
 
         async def __aenter__(self):

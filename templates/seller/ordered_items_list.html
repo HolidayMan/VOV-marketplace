@@ -1,0 +1,40 @@
+{% extends 'seller/base.html' %}
+{% block content %}
+    <div class="container m-2">
+    <br>
+        {% if order_items_list is defined and order_items_list|length > 0 %}
+            <h1>Your orders</h1>
+            <hr>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Creation date</th>
+                  <th scope="col">Product name</th>
+                  <th scope="col">Count</th>
+                  <th scope="col">Total cost</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for order_item in order_items_list %}
+                <tr>
+                  <td>{{ order_item.creation_date }}</td>
+                  <td>{{ order_item.product.product_data.name }}</td>
+                  <td>{{ order_item.count }}</td>
+                  <td>{{ order_item.total() }}</td>
+                  <td>{{ order_item.status.name }}</td>
+                  <td>
+                    <a class="btn btn-success"
+                       href="{{ url_for("getOrderedItem") }}?order_id={{ order_item.order_id }}&product_id={{ order_item.product.id }}"
+                       role="button">View this item</a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        {% else %}
+            <h1>You don't have any orders</h1>
+        {% endif %}
+    </div>
+{% endblock %}

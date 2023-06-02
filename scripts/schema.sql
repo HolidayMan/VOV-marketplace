@@ -301,6 +301,24 @@ CREATE TABLE cart_item
 )
 ;
 
+DELIMITER $$
+    CREATE TRIGGER order_status_update_trigger AFTER UPDATE ON order_item FOR EACH ROW
+        BEGIN
+            DECLARE items_count INT DEFAULT 0;
+            DECLARE processed_count INT DEFAULT 0;
+            SELECT COUNT(*) INTO items_count FROM order_item WHERE order_id = NEW.order_id;
+            SELECT COUNT(*) INTO processed_count FROM order_item
+                 JOIN  order_item_status ois ON order_item.status_id = ois.id
+                 WHERE order_id = NEW.order_id AND (ois.name = 'accepted' OR ois.name = 'declined');
+            IF (items_count = processed_count) THEN
+                UPDATE `order` SET `order`.status_id = (SELECT order_status.id
+                                                        FROM order_status
+                                                        WHERE order_status.name = 'closed')
+                WHERE `order`.id = NEW.order_id;
+            END IF;
+        END $$
+DELIMITER ;
+
 
 
 

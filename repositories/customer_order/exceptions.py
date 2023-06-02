@@ -1,2 +1,0 @@
-class OrderDoesNotExist(Exception):
-    pass

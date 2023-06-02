@@ -1,13 +1,12 @@
 from datetime import datetime
 
-from pydantic import PositiveInt
-from pymysql import ProgrammingError, DatabaseError
+from pymysql import DatabaseError
 
 from domain.cart import CartItem
 from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.user import User
 
-from repositories.customer_order.exceptions import OrderDoesNotExist
+from repositories.order.exceptions import OrderDoesNotExistError
 from services.exceptions import DataAccessError
 
 from services.uow.cart.cart_unit_of_work import AbstractCartUnitOfWork
@@ -46,13 +45,12 @@ class CustomerOrderService:
             async with self._cart_uow:
                 cart_items = await self._cart_uow.cart_items.get_cart_items(user)
                 order_items = make_order_items_from_cart_items(cart_items)
-                order = Order(user_id=user.id,
-                              id=None,
+                order = Order(id=None,
                               order_items=order_items,
                               status=OrderStatus.IN_PROCESS,
                               creation_date=datetime.now(),)
             async with self._order_uow:
-                order_in_db = await self._order_uow.orders.add_order(order)
+                order_in_db = await self._order_uow.orders.add_order(order, user)
             async with self._cart_uow:
                 await self._cart_uow.cart_items.remove_all_cart_items(user)
                 return order_in_db
@@ -69,7 +67,7 @@ class CustomerOrderService:
 
     async def get_order(self, orderId: int) -> Order:
         if orderId < 1:
-            raise OrderDoesNotExist("Order does not exist")
+            raise OrderDoesNotExistError("Order does not exist")
         try:
             async with self._order_uow:
                 order = await self._order_uow.orders.get_order(orderId)
@@ -83,8 +81,7 @@ class CustomerOrderService:
                 await self._cart_uow.cart_items.update_cart_items_prices(user)
                 cart_items = await self._cart_uow.cart_items.get_cart_items(user)
                 order_items = make_order_items_from_cart_items(cart_items)
-                order = Order(user_id=user.id,
-                              id=None,
+                order = Order(id=None,
                               order_items=order_items,
                               status=OrderStatus.IN_PROCESS,
                               creation_date=datetime.now(),)

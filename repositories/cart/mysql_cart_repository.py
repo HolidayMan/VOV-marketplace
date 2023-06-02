@@ -23,7 +23,6 @@ def map_row_to_cart_item(row) -> CartItem:
             )
         ),
         count=PositiveInt(row['count']),
-        user_id=PositiveInt(row['customer_id']),
     )
     price = row['price']
     if price is not None:

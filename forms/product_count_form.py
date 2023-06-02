@@ -26,7 +26,7 @@ class ProductCountForm:
         return False
 
     async def get_product_id(self):
-        return PositiveInt(self.product_id)
+        return PositiveInt(int(self.product_id))
 
     async def get_count(self):
-        return PositiveInt(self.count)
+        return PositiveInt(int(self.count))

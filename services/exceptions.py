@@ -4,3 +4,7 @@ class DataAccessError(Exception):
 
 class CannotCreateShopError(Exception):
     pass
+
+
+class ProductDoesNotExistError(Exception):
+    pass
