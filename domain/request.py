@@ -14,7 +14,6 @@ class RequestStatus(Enum):
 
 
 class Request(BaseModel):
-    id: PositiveInt | None
     seller_id: User
     moderator_id: User | None
     request_status: RequestStatus
@@ -23,9 +22,16 @@ class Request(BaseModel):
     check_date: datetime | None = None
 
 
-class ShopCreationRequest(Request):
+class ShopCreationRequest(BaseModel):
+    request_status: RequestStatus
+    refuse_reason: str | None = None
+    creation_date: datetime
+    check_date: datetime | None = None
     shop_data: ShopData
 
 
 class ProductCreationRequest(Request):
     product_data: ProductData
+
+    # delete in request id and create ShopCreationRequest in db
+    #TODO create normal base class!
