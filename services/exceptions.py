@@ -8,3 +8,10 @@ class CannotCreateShopError(Exception):
 
 class ProductDoesNotExistError(Exception):
     pass
+
+
+class InvalidUserError(Exception):
+    pass
+
+class CannotCancelOrderError(Exception):
+    pass

@@ -319,7 +319,21 @@ DELIMITER $$
         END $$
 DELIMITER ;
 
-
+DELIMITER $$
+    CREATE TRIGGER order_canceled_trigger AFTER UPDATE ON `order` FOR EACH ROW
+        BEGIN
+            DECLARE canceled_order_status_id INT DEFAULT 0;
+            DECLARE canceled_order_item_status_id INT DEFAULT 0;
+            SELECT order_status.id INTO canceled_order_status_id
+                FROM order_status WHERE order_status.name = 'canceled';
+            SELECT order_item_status.id INTO canceled_order_item_status_id
+                FROM order_item_status WHERE order_item_status.name = 'canceled';
+            IF (NEW.status_id = canceled_order_status_id) THEN
+                UPDATE order_item SET order_item.status_id = canceled_order_item_status_id
+                    WHERE order_item.order_id = NEW.id;
+            END IF;
+        END $$
+DELIMITER ;
 
 
 

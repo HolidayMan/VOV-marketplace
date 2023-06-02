@@ -15,12 +15,12 @@ class IdForm:
         form = await self.request.form()
         self.id = form.get(self.id_name)
 
-    async def is_valid(self):
+    def is_valid(self):
         if not self.id or not str.isnumeric(self.id) or not (int(self.id) >= 1):
             self.errors.append("Id must number be bigger than 1")
         if not self.errors:
             return True
         return False
 
-    async def get_id(self):
+    def get_id(self):
         return PositiveInt(self.id)

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pydantic import PositiveInt
 from pymysql import DatabaseError
 
 from domain.cart import CartItem
@@ -7,7 +8,7 @@ from domain.order import Order, OrderStatus, OrderItem, OrderItemStatus
 from domain.user import User
 
 from repositories.order.exceptions import OrderDoesNotExistError
-from services.exceptions import DataAccessError
+from services.exceptions import DataAccessError, InvalidUserError, CannotCancelOrderError
 
 from services.uow.cart.cart_unit_of_work import AbstractCartUnitOfWork
 from services.uow.customer_order.customer_order_unit_of_work import AbstractCustomerOrderUnitOfWork
@@ -29,7 +30,6 @@ def make_order_items_from_cart_items(cart_items_list: list[CartItem]) -> list[Or
 
 
 class CustomerOrderService:
-
     _order_uow: AbstractCustomerOrderUnitOfWork
     _cart_uow: AbstractCartUnitOfWork
 
@@ -48,7 +48,7 @@ class CustomerOrderService:
                 order = Order(id=None,
                               order_items=order_items,
                               status=OrderStatus.IN_PROCESS,
-                              creation_date=datetime.now(),)
+                              creation_date=datetime.now(), )
             async with self._order_uow:
                 order_in_db = await self._order_uow.orders.add_order(order, user)
             async with self._cart_uow:
@@ -65,12 +65,14 @@ class CustomerOrderService:
         except DatabaseError:
             raise DataAccessError("Data access error")
 
-    async def get_order(self, orderId: int) -> Order:
+    async def get_order(self, orderId: int, user: User) -> Order:
         if orderId < 1:
             raise OrderDoesNotExistError("Order does not exist")
         try:
             async with self._order_uow:
                 order = await self._order_uow.orders.get_order(orderId)
+                if order.user_id != user.id:
+                    raise InvalidUserError("Invalid user id")
                 return order
         except DatabaseError:
             raise DataAccessError("Data access error")
@@ -84,8 +86,21 @@ class CustomerOrderService:
                 order = Order(id=None,
                               order_items=order_items,
                               status=OrderStatus.IN_PROCESS,
-                              creation_date=datetime.now(),)
+                              creation_date=datetime.now(), )
                 return order
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+
+    async def cancel_order(self, orderId: PositiveInt, user: User) -> Order:
+        try:
+            async with self._order_uow:
+                order = await self._order_uow.orders.get_order(orderId)
+                if order.user_id != user.id:
+                    raise InvalidUserError("Invalid user id")
+                if not order.can_be_canceled():
+                    raise CannotCancelOrderError("This order cannot be canceled")
+                canceled_order = await self._order_uow.orders.cancel_order(orderId)
+                return canceled_order
         except DatabaseError:
             raise DataAccessError("Data access error")
 

@@ -5,12 +5,13 @@ from aiomysql.cursors import DictCursor
 from domain.order import OrderItemStatus
 from domain.product import ProductData, Product
 from domain.user import User
+from repositories.exceptions import DoesNotExistError
 from repositories.order.exceptions import OrderItemDoesNotExistError
-from repositories.order.seller_order.order import OrderItemWithOrderIdAndCreationDate
+from repositories.order.order import OrderItemWithOrderIdAndCreationDate
 from repositories.order.seller_order.seller_order_repository import AsyncSellerOrderRepository
 from repositories.order.seller_order.sql import GET_ORDER_ITEMS_BY_SELLER_ID, \
     GET_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS, \
-    UPDATE_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS
+    UPDATE_ORDER_ITEM_BY_ORDER_AND_PRODUCT_IDS, GET_SELLER_ID_BY_PRODUCT_ID
 
 
 def map_row_to_order_item(row):
@@ -78,3 +79,13 @@ class MySQLAsyncSellerOrderRepository(AsyncSellerOrderRepository):
              order_item.order_id, order_item.product.id)
         )
         return await self.get_ordered_item(order_item.order_id, order_item.product.id)
+
+    async def get_seller_id_for_product(self, product_id) -> PositiveInt:
+        await self.cursor.execute(
+            GET_SELLER_ID_BY_PRODUCT_ID,
+            (product_id,)
+        )
+        if id_row := await self.cursor.fetchone():
+            seller_id = PositiveInt(id_row['seller_id'])
+            return seller_id
+        raise DoesNotExistError("No product with such id")

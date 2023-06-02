@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 
 from pydantic import PositiveInt
 
-from domain.order import OrderStatus
 from domain.user import User
-from repositories.order.seller_order.order import OrderItemWithOrderIdAndCreationDate
+from repositories.order.order import OrderItemWithOrderIdAndCreationDate
 
 
 class AsyncSellerOrderRepository(ABC):
@@ -21,5 +20,9 @@ class AsyncSellerOrderRepository(ABC):
     @abstractmethod
     async def update_order_item(self,
                                 order_item: OrderItemWithOrderIdAndCreationDate) -> OrderItemWithOrderIdAndCreationDate:
+        pass
+
+    @abstractmethod
+    async def get_seller_id_for_product(self, product_id) -> PositiveInt:
         pass
 
