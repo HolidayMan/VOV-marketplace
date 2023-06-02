@@ -30,6 +30,15 @@
               {% endfor %}
               </tbody>
             </table>
+            {% if order.can_be_canceled() %}
+                <form method="post" action="{{ url_for('cancelOrder') }}">
+                    <div class="form-group">
+                        <input type="hidden" id="orderId" name="orderId" value="{{ order.id }}"/>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" type="submit">Cancel order</button>
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}

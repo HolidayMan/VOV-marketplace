@@ -52,6 +52,9 @@ class Order(BaseModel):
 
     def can_be_canceled(self) -> bool:
         # if at least one item is already accepted by seller, the order can't be canceled
+        # if order is already canceled than it can't be canceled
+        if self.status == OrderStatus.CANCELED:
+            return False
         for item in self.order_items:
             if item.status == OrderItemStatus.ACCEPTED:
                 return False

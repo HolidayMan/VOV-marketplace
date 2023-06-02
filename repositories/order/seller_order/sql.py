@@ -31,3 +31,7 @@ UPDATE order_item SET order_item.status_id =
     order_item.refuse_reason = %s
     WHERE order_item.order_id = %s AND order_item.product_id = %s;
 """
+
+GET_SELLER_ID_BY_PRODUCT_ID = """
+SELECT product.seller_id FROM product WHERE product.id = %s;
+"""

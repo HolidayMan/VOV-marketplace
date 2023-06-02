@@ -8,17 +8,19 @@ from domain.user import User
 from repositories.order.customer_order.customer_order_repository import AsyncCustomerOrderRepository
 from repositories.order.exceptions import OrderDoesNotExistError
 from repositories.order.customer_order.sql import CREATE_ORDER, CREATE_ORDER_ITEM, GET_ORDER_BY_ID, \
-    GET_ORDER_ITEMS_BY_ORDER_ID, GET_ORDER_IDS_FOR_USER
+    GET_ORDER_ITEMS_BY_ORDER_ID, GET_ORDER_IDS_FOR_USER, UPDATE_ORDER_STATUS
+from repositories.order.order import OrderWithUserId
 
 DATE_TIME_FORMAT_STR = '%Y-%m-%d %H:%M:%S'
 
 
-def map_row_to_order(row) -> Order:
-    return Order(
+def map_row_to_order(row) -> OrderWithUserId:
+    return OrderWithUserId(
         id=PositiveInt(row['id']),
         order_items=[],
         status=OrderStatus(row['status_name']),
-        creation_date=row['creation_date']
+        creation_date=row['creation_date'],
+        user_id=row['customer_id']
     )
 
 
@@ -60,7 +62,7 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_all_orders(self, user: User) -> list[Order]:
+    async def get_all_orders(self, user: User) -> list[OrderWithUserId]:
         async with self.session.cursor() as cursor:
             await cursor.execute(
                 GET_ORDER_IDS_FOR_USER,
@@ -73,7 +75,7 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                     orders_list.append(await self.get_order(order_id))
             return orders_list
 
-    async def get_order(self, orderId: PositiveInt) -> Order:
+    async def get_order(self, orderId: PositiveInt) -> OrderWithUserId:
         async with self.session.cursor() as cursor:
             await cursor.execute(
                 GET_ORDER_BY_ID,
@@ -91,7 +93,7 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                 return order
             raise OrderDoesNotExistError("There is no order with this id")
 
-    async def add_order(self, order: Order, user: User) -> Order:
+    async def add_order(self, order: Order, user: User) -> OrderWithUserId:
         async with self.session.cursor() as cursor:
             await cursor.execute(
                 CREATE_ORDER,
@@ -104,4 +106,19 @@ class MySQLAsyncCustomerOrderRepository(AsyncCustomerOrderRepository):
                     (order.id, order_item.count, order_item.price.amount, order_item.product.id, order_item.status.name)
                 )
             await self.session.commit()
-            return order
+            return OrderWithUserId(
+                id=order.id,
+                order_items=order.order_items,
+                status=order.status,
+                creation_date=order.creation_date,
+                user_id=user.id
+            )
+
+    async def cancel_order(self, orderId: PositiveInt) -> OrderWithUserId:
+        async with self.session.cursor() as cursor:
+            await cursor.execute(
+                UPDATE_ORDER_STATUS,
+                (OrderStatus.CANCELED.name, orderId)
+            )
+            await self.session.commit()
+            return await self.get_order(orderId)
