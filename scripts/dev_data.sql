@@ -20,7 +20,9 @@ INSERT INTO vov_database.shop (shop_data_id, seller_id) VALUES (2, 4);
 INSERT INTO vov_database.shop (shop_data_id, seller_id) VALUES (3, 7);
 
 # Adding create_shop_request
-INSERT INTO vov_database.create_shop_request (refuse_reason, shop_data_id, request_status_id, creation_date, check_date, moderator_id, seller_id) VALUES (null, 1, 2, '2023-06-03 17:17:06', '2023-06-03 17:17:09', 2, 3);
+INSERT INTO vov_database.create_shop_request (refuse_reason, shop_data_id, request_status_id, creation_date, check_date, moderator_id, seller_id) VALUES (null, 1, 2, '2023-06-03 23:43:07', '2023-06-03 23:43:06', 8, 2);
+INSERT INTO vov_database.create_shop_request (refuse_reason, shop_data_id, request_status_id, creation_date, check_date, moderator_id, seller_id) VALUES (null, 2, 2, '2023-06-03 23:43:09', '2023-06-03 23:43:09', 8, 4);
+INSERT INTO vov_database.create_shop_request (refuse_reason, shop_data_id, request_status_id, creation_date, check_date, moderator_id, seller_id) VALUES (null, 3, 2, '2023-06-03 23:43:11', '2023-06-03 23:43:11', 8, 7);
 
 # Adding products data
 INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Spider', 'An exotic pet.', 1, 1, '/spiduh.jpg');
