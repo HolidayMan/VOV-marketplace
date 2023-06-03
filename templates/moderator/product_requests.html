@@ -18,7 +18,9 @@
                             <p>{{ product_request.product_data.description|truncate(30) }}</p>
                         </div>
 {#                        <a href="{{ url_for('accept-product-request') }}" class="btn btn-success">Accept</a>#}
-                        <a href="" class="btn btn-success">Accept</a>
+                        <form method="post" action="{{ url_for('approve-product', product_data_id=product_request.product_data.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success">Accept</button>
+                        </form>
                         <a href="{{ url_for('decline-product', product_data_id=product_request.product_data.id) }}" class="btn btn-danger">Decline</a>
                     </div>
                 </div>

@@ -36,3 +36,11 @@ async def process_decline_product(request: Request, product_data_id: int, refuse
     await product_requests_service.decline_product_request(product_data_id, refuse_reason, moderator)
     response = RedirectResponse(url=request.app.url_path_for('product-requests-moderation'), status_code=303)
     return response
+
+
+@router.post('/approve-product/{product_data_id}', name='approve-product',
+             dependencies=[Depends(require_auth), Depends(require_role(UserRole.MODERATOR))])
+async def approve_product(request: Request, product_data_id: int, moderator: User = Depends(require_auth)):
+    await product_requests_service.approve_product_request(product_data_id, moderator)
+    response = RedirectResponse(url=request.app.url_path_for('product-requests-moderation'), status_code=303)
+    return response

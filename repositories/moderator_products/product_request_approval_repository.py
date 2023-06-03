@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from domain.product import ProductData
 from domain.request import ProductCreationRequest, RequestStatus
 from repositories.exceptions import DoesNotExistError
-from .sql import SELECT_OPEN_PRODUCT_REQUESTS, DECLINE_PRODUCT_REQUEST
+from .sql import SELECT_OPEN_PRODUCT_REQUESTS, DECLINE_PRODUCT_REQUEST, ACCEPT_PRODUCT_REQUEST
 
 
 class ProductCreationRequestWithoutUsers(ProductCreationRequest):
@@ -19,6 +19,10 @@ class AsyncProductRequestApprovalRepository(ABC):
 
     @abstractmethod
     async def decline_product_request(self, product_data_id: int, refuse_reason: str, moderator_id: int) -> None:
+        pass
+
+    @abstractmethod
+    async def accept_product_request(self, product_data_id: int, moderator_id: int) -> None:
         pass
 
 
@@ -48,8 +52,19 @@ class MySQLAsyncProductRequestApprovalRepository(AsyncProductRequestApprovalRepo
         ]
 
     async def decline_product_request(self, product_data_id: int, refuse_reason: str, moderator_id: int) -> None:
+        # TODO: catch database errors and raise DataAccessError
         await self.cursor.execute(
             DECLINE_PRODUCT_REQUEST,
-            (refuse_reason, moderator_id, product_data_id, product_data_id)
+            (refuse_reason, moderator_id, product_data_id)
         )
+        if self.cursor.rowcount == 0:
+            raise DoesNotExistError(f"Product request with id {product_data_id} does not exist")
+
+    async def accept_product_request(self, product_data_id: int, moderator_id: int) -> None:
+        await self.cursor.execute(
+            ACCEPT_PRODUCT_REQUEST,
+            (moderator_id, product_data_id)
+        )
+        if self.cursor.rowcount == 0:
+            raise DoesNotExistError(f"Product request with id {product_data_id} does not exist")
 

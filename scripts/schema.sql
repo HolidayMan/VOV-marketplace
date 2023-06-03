@@ -335,5 +335,24 @@ DELIMITER $$
         END $$
 DELIMITER ;
 
+DELIMITER $$
+
+CREATE TRIGGER update_product_approval
+AFTER UPDATE ON add_product_request
+FOR EACH ROW
+BEGIN
+    IF NEW.request_status_id = 2 THEN
+        UPDATE product_data
+        SET approved = 1
+        WHERE id = NEW.product_data_id;
+    ELSEIF NEW.request_status_id = 3 OR NEW.request_status_id = 1 THEN
+        UPDATE product_data
+        SET approved = 0
+        WHERE id = NEW.product_data_id;
+    END IF;
+END $$
+
+DELIMITER ;
+
 
 

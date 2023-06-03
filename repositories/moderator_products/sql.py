@@ -11,5 +11,10 @@ WHERE request_status.name = 'in_process' AND product_data.approved = 0;
 DECLINE_PRODUCT_REQUEST = """
 UPDATE add_product_request SET request_status_id = (SELECT id FROM request_status WHERE name = 'declined'),
                                refuse_reason = %s, moderator_id = %s WHERE product_data_id = %s;
-UPDATE product_data SET approved = 0 WHERE id = %s;
+"""
+
+
+ACCEPT_PRODUCT_REQUEST = """
+UPDATE add_product_request SET request_status_id = (SELECT id FROM request_status WHERE name = 'accepted'),
+                                 moderator_id = %s WHERE product_data_id = %s;
 """
