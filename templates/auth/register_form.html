@@ -6,6 +6,18 @@
 
 {% block content %}
     <h1>Register as {{ role.value }}</h1>
+    <h3>Another variants:</h3>
+    <div class="row mb-3">
+        {% with roles = ["customer", "seller", "moderator"] %}
+            {% for role_ in roles %}
+                {% if role_ != role.value %}
+                    <div class="col">
+                        <a href="{{ url_for("register") }}?role={{ role_ }}&next={{ next }}">{{ role_|capitalize }}</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endwith %}
+    </div>
     {% if error %}
         <div class="alert alert-danger" role="alert">
             {{ error }}

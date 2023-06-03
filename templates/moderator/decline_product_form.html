@@ -1,0 +1,20 @@
+{% extends 'moderator/base.html' %}
+{% block title %}Decline product{% endblock %}
+{% block content %}
+    <div class="row">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <h1>Describe why you want to decline the product:</h1>
+        <form method="post" action="{{ url_for('decline-product', product_data_id=product_data_id) }}">
+            <div class="form-group">
+                <label for="reason">Reason*</label>
+                <textarea class="form-control" id="reason" name="refuse_reason" rows="3"></textarea>
+            </div>
+            <button class="btn btn-danger mt-2" type="submit">Decline</button>
+        </form>
+    </div>
+{% endblock %}
+```

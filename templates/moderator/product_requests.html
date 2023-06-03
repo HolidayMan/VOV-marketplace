@@ -1,0 +1,32 @@
+{% extends 'moderator/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <h1>Open requests:</h1>
+    </div>
+    {% for product_request in requests %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="{{ product_request.product_data.image_file_path|make_media }}" width="100px"
+                         alt="{{ product_request.product_data.name }}" class="card-img-top">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h3>{{ product_request.product_data.name }}</h3>
+                        </div>
+                        <div class="card-text">
+                            <p>{{ product_request.product_data.description|truncate(30) }}</p>
+                        </div>
+{#                        <a href="{{ url_for('accept-product-request') }}" class="btn btn-success">Accept</a>#}
+                        <a href="" class="btn btn-success">Accept</a>
+                        <a href="{{ url_for('decline-product', product_data_id=product_request.product_data.id) }}" class="btn btn-danger">Decline</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <h2>There are no unapproved products</h2>
+        </div>
+    {% endfor %}
+{% endblock %}

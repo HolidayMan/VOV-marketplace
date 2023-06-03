@@ -3,7 +3,7 @@ from starlette.staticfiles import StaticFiles
 from fastapi import Request
 from auth.middleware import process_unauthorized_error, process_forbidden_error
 from routers import catalog_controller, cart_controller, shop_controller, \
-    customer_order_controller, product_management_controller, seller_order_controller
+    customer_order_controller, product_management_controller, seller_order_controller, product_requests_moderation
 from auth.router import router as auth_router
 from services.exceptions import DataAccessError
 from settings import STATIC_ROOT, STATIC_URL, MEDIA_ROOT, MEDIA_URL
@@ -16,6 +16,7 @@ app.include_router(cart_controller.router)
 app.include_router(shop_controller.router)
 app.include_router(product_management_controller.router)
 app.include_router(customer_order_controller.router)
+app.include_router(product_requests_moderation.router)
 app.include_router(auth_router)
 app.mount(STATIC_URL, StaticFiles(directory=STATIC_ROOT), name="static")
 app.mount(MEDIA_URL, StaticFiles(directory=MEDIA_ROOT), name="media")
