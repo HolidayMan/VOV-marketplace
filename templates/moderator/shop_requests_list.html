@@ -1,0 +1,42 @@
+{% extends 'moderator/base.html' %}
+{% block content %}
+     <div  class="container m-2">
+        <h2>VIEW ALL SHOP REQUESTS</h2>
+     {% if shop_requests_list is defined and shop_requests_list|length > 0 %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Status name</th>
+                  <th scope="col">Refuse reason</th>
+                  <th scope="col">Creation date</th>
+                  <th scope="col">Check date</th>
+                  <th scope="col">Shop name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Approved</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for shop_request in shop_requests_list %}
+                <tr>
+                  <td>{{ shop_request.request_status.name }}</td>
+                  <td>{{ shop_request.refuse_reason }}</td>
+                  <td>{{ shop_request.creation_date }}</td>
+                  <td>{{ shop_request.check_date }}</td>
+                  <td>{{ shop_request.shop_data.name }}</td>
+                  <td>{{ shop_request.shop_data.description }}</td>
+                  <td>{{ shop_request.shop_data.approved }}</td>
+                  <td>
+                      <button class="bth-shop-request">
+                          <a href="{{ url_for("viewShopRequest") }}?shop_data_id={{ shop_request.shop_data.id }}"
+                                  role="button">View this shop request</a>
+                      </button>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+     {% else %}
+            <h1>You don't have any shop requests</h1>
+        {% endif %}
+    </div>
+{% endblock %}

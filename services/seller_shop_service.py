@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pymysql import ProgrammingError, IntegrityError
+from pymysql import ProgrammingError
 
 from domain.request import RequestStatus
 from domain.shop import Shop, ShopData
@@ -9,10 +9,10 @@ from repositories.seller_shop_request_repository.shop_creation_request import Sh
 
 from services.exceptions import DataAccessError, CannotCreateShopError
 from services.uow.shop.shop_unit_of_work import AbstractShopUnitOfWork
-from services.uow.shop_request.shop_request_unit_of_work import AbstractSellerShopRequestUnitOfWork
+from services.uow.shop_request.seller_shop_request_unit_of_work import AbstractSellerShopRequestUnitOfWork
 
 
-class ShopService:
+class SellerShopService:
     _shop_uow: AbstractShopUnitOfWork
     _shop_request_uow: AbstractSellerShopRequestUnitOfWork
 

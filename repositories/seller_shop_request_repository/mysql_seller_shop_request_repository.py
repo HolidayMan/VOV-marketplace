@@ -1,7 +1,7 @@
 from pydantic import PositiveInt
 
 from db import AsyncSession
-from domain.request import ShopCreationRequest, RequestStatus
+from domain.request import RequestStatus
 from domain.shop import ShopData
 from domain.user import User
 from repositories.seller_shop_request_repository.seller_shop_request_repository import AsyncSellerShopRequestRepository
@@ -11,6 +11,7 @@ from repositories.seller_shop_request_repository.sql import CREATE_SHOP_REQUEST,
 
 def map_row_to_creation_request(row) -> ShopCreationRequestInDB:
     shop_creation_request_in_db = ShopCreationRequestInDB(
+        seller_id=PositiveInt(row['seller_id']),
         request_status=RequestStatus(row['status_name']),
         refuse_reason=row['refuse_reason'],
         creation_date=row['creation_date'],
@@ -47,15 +48,6 @@ class MySQLAsyncSellerShopRequestRepository(AsyncSellerShopRequestRepository):
             await self.session.commit()
         return shop_request
 
-    async def get_latest_request(self, seller: User) -> ShopCreationRequestInDB:
-        pass
-
-    async def update(self, request: ShopCreationRequestInDB) -> ShopCreationRequestInDB:
-        pass
-
-    async def get_shop_request_by_shop_data(self, shop_data: ShopData) -> ShopCreationRequestInDB:
-        pass
-
     async def get_all_shop_requests(self, seller: User) -> list[ShopCreationRequestInDB]:
         async with self.session.cursor() as cursor:
             await cursor.execute(GET_SHOP_REQUESTS, seller)
@@ -64,5 +56,4 @@ class MySQLAsyncSellerShopRequestRepository(AsyncSellerShopRequestRepository):
                 shop_request_lists = map_rows_to_shop_requests_list(shop_request_rows)
                 return shop_request_lists
         return []
-
 
