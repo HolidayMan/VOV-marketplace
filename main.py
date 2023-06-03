@@ -1,3 +1,4 @@
+from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
 from fastapi import Request
@@ -24,7 +25,7 @@ app.mount(MEDIA_URL, StaticFiles(directory=MEDIA_ROOT), name="media")
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return RedirectResponse(url=app.url_path_for("catalog"), status_code=302)
 
 
 @app.exception_handler(DataAccessError)
