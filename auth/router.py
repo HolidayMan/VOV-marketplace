@@ -12,8 +12,27 @@ from .services import process_user_login, process_create_user
 from app import app
 from .dependencies import get_current_user, get_uow
 
-
 router = APIRouter(prefix="/auth")
+
+
+def get_redirect_url_for_role(role: UserRole):
+    if role == UserRole.CUSTOMER:
+        return app.url_path_for("catalog")
+    elif role == UserRole.SELLER:
+        return app.url_path_for("my-products")
+    elif role == UserRole.MODERATOR:
+        return app.url_path_for("product-requests-moderation")
+
+
+def get_redirect_url_for_role_and_next(role: UserRole, next_: str):
+    default_urls = {
+        UserRole.CUSTOMER: get_redirect_url_for_role(UserRole.CUSTOMER),
+        UserRole.SELLER: get_redirect_url_for_role(UserRole.SELLER),
+        UserRole.MODERATOR: get_redirect_url_for_role(UserRole.MODERATOR)
+    }
+    if next_ not in default_urls.values():
+        return next_
+    return default_urls[role]
 
 
 @router.get("/logout", name="logout")
@@ -31,7 +50,9 @@ async def logout(next_: str = Query(default=None, alias="next"), user=Depends(ge
 async def login_form(request: Request, role: UserRole = UserRole.CUSTOMER, error: str = None,
                      user=Depends(get_current_user), next_: str = Query(default=None, alias="next")):
     if not next_:
-        next_ = app.url_path_for('catalog')
+        next_ = get_redirect_url_for_role(role)
+    else:
+        next_ = get_redirect_url_for_role_and_next(role, next_)
     if user:
         return render(request, "auth/logout.html", {"next": quote_plus(str(request.url))})
     return render(request, "auth/login_form.html", {"role": role, "error": error, "next": quote_plus(next_)})
@@ -43,7 +64,9 @@ async def process_login(email: Annotated[EmailStr, Form()],
                         next_: str = Query(default=None, alias="next"), uow=Depends(get_uow),
                         user=Depends(get_current_user)):
     if not next_:
-        next_ = app.url_path_for('catalog')
+        next_ = get_redirect_url_for_role(role)
+    else:
+        next_ = get_redirect_url_for_role_and_next(role, next_)
     if user:
         return RedirectResponse(url=f"{router.url_path_for('login')}?role={role.value}"
                                     f"&next={quote_plus(next_)}", status_code=303)
@@ -63,7 +86,9 @@ async def register_form(request: Request, role: UserRole = UserRole.CUSTOMER,
                         error: str = None, user=Depends(get_current_user),
                         next_: str = Query(default=None, alias="next")):
     if not next_:
-        next_ = app.url_path_for('catalog')
+        next_ = get_redirect_url_for_role(role)
+    else:
+        next_ = get_redirect_url_for_role_and_next(role, next_)
     if user:
         return render(request, "auth/logout.html", {"next": quote_plus(str(request.url))})
     return render(request, "auth/register_form.html", {"role": role, "error": error, "next": quote_plus(next_)})
@@ -75,7 +100,9 @@ async def process_register(name: Annotated[str, Form()], email: Annotated[EmailS
                            next_: str = Query(default=None, alias="next"), uow=Depends(get_uow),
                            user=Depends(get_current_user)):
     if not next_:
-        next_ = app.url_path_for('catalog')
+        next_ = get_redirect_url_for_role(role)
+    else:
+        next_ = get_redirect_url_for_role_and_next(role, next_)
     if user:
         return RedirectResponse(url=f"{router.url_path_for('register')}?&role={role.value}&next={quote_plus(next_)}",
                                 status_code=303)
