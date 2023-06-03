@@ -4,7 +4,7 @@
         {% if order_item is defined %}
             <h2>Ordered item</h2>
             <hr>
-            <img src="{{ order_item.product.product_data.image_file_path|make_media }}" alt="Order item image">
+            <img src="{{ order_item.product.product_data.image_file_path|make_media }}" width="300px" alt="Order item image">
             <h3>Total cost: {{ order_item.total() }}</h3>
             <h3>Count: {{ order_item.count }}</h3>
             <h3>Creation date: {{ order_item.creation_date }}</h3>

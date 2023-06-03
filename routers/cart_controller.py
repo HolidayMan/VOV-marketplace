@@ -17,12 +17,9 @@ service = CartService(MySQLAsyncCartUnitOfWork())
 
 @router.get("/cart/", name="cart", dependencies=[Depends(require_auth), Depends(require_role(UserRole.CUSTOMER))])
 async def get_cart_items(request: Request, user: User = Depends(get_user)):
-    try:
-        items = await service.get_cart_items(user)
-        return render(request, "customer/cart.html",
-                      {"items_list": items})
-    except DataAccessError:
-        return render(request, "data_access_error.html", {})
+    items = await service.get_cart_items(user)
+    return render(request, "customer/cart.html",
+                  {"items_list": items})
 
 
 @router.post("/addToCart", name="addToCart",
@@ -32,11 +29,8 @@ async def add_product(request: Request,
     form = ProductCountForm(request)
     await form.load_data()
     if await form.is_valid():
-        try:
-            await service.add_product(user, await form.get_product_id(), await form.get_count())
-            return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
-        except DataAccessError:
-            return render(request, "data_access_error.html", {})
+        await service.add_product(user, await form.get_product_id(), await form.get_count())
+        return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)
     return RedirectResponse(url=f"{app.url_path_for('catalog')}", status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -46,13 +40,10 @@ async def add_product(request: Request,
 async def remove_item(request: Request, user: User = Depends(get_user)):
     form = IdForm(request, "productId")
     await form.load_data()
-    if await form.is_valid():
-        try:
-            await service.remove_item(user, await form.get_id())
-            items = await service.get_cart_items(user)
-            return render(request, "customer/cart.html",
-                          {"items_list": items})
-        except DataAccessError:
-            return render(request, "data_access_error.html", {})
+    if form.is_valid():
+        await service.remove_item(user, form.get_id())
+        items = await service.get_cart_items(user)
+        return render(request, "customer/cart.html",
+                      {"items_list": items})
     else:
         return RedirectResponse(url=f"{router.url_path_for('cart')}", status_code=status.HTTP_303_SEE_OTHER)

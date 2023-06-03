@@ -4,28 +4,30 @@
         <h1>Your products:</h1>
     </div>
     <div class="row mt-3 px-3">
-        {% for product, request_status in products %}
-            <div class="col-6 col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img src="{{ product.product_data.image_file_path|make_media }}" width="100px" alt="{{ product.name }}" class="card-img-top">
-                    {% if request_status.value == "in_process" %}
-                        <span class="badge bg-warning text-dark">Waiting for approve</span>
-                    {% elif request_status.value == "accepted" %}
-                        <span class="badge bg-success">Approved</span>
-                    {% elif request_status.value == "declined" %}
-                        <span class="badge bg-danger">Declined</span>
-                    {% endif %}
-                    <div class="card-body">
-                        <div class="card-title">
-                            <h3>{{ product.product_data.name }}</h3>
+            {% for product, request_status in products %}
+                <div class="col-6 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ product.product_data.image_file_path|make_media }}" width="100px" alt="{{ product.name }}" class="card-img-top">
+                        {% if request_status.value == "in_process" %}
+                            <span class="badge bg-warning text-dark">Waiting for approve</span>
+                        {% elif request_status.value == "accepted" %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif request_status.value == "declined" %}
+                            <span class="badge bg-danger">Declined</span>
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h3>{{ product.product_data.name }}</h3>
+                            </div>
+                            <div class="card-text">
+                                <p>{{ product.product_data.description|truncate(30) }}</p>
+                            </div>
+                            <a href="{{ url_for('my-product', product_id=product.id) }}" class="btn btn-primary w-100">View</a>
                         </div>
-                        <div class="card-text">
-                            <p>{{ product.product_data.description|truncate(30) }}</p>
-                        </div>
-                        <a href="{{ url_for('my-product', product_id=product.id) }}" class="btn btn-primary w-100">View</a>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% else %}
+                <h2>You don't have any products</h2>
+            {% endfor %}
     </div>
 {% endblock %}

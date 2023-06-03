@@ -5,9 +5,10 @@ from pymysql import DatabaseError
 
 from domain.order import OrderItemStatus
 from domain.user import User
+from repositories.exceptions import DoesNotExistError
 from repositories.order.exceptions import CannotProcessOrderItemError
-from repositories.order.seller_order.order import OrderItemWithOrderIdAndCreationDate
-from services.exceptions import DataAccessError
+from repositories.order.order import OrderItemWithOrderIdAndCreationDate
+from services.exceptions import DataAccessError, InvalidUserError
 from services.uow.seller_order.seller_order_unit_of_work import AbstractSellerOrderUnitOfWork
 
 
@@ -25,8 +26,18 @@ class SellerOrderService:
         except DatabaseError:
             raise DataAccessError("Data access error")
 
+    async def get_not_processed_ordered_items(self, seller: User) -> list[OrderItemWithOrderIdAndCreationDate]:
+        try:
+            async with self._uow:
+                items = await self._uow.orders.get_not_processed_ordered_items(seller)
+                return items
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+
     async def get_ordered_item(self, product_id: PositiveInt,
-                               order_id: PositiveInt) -> OrderItemWithOrderIdAndCreationDate:
+                               order_id: PositiveInt, seller: User) -> OrderItemWithOrderIdAndCreationDate:
+        if not await self.product_belongs_to_seller(product_id, seller.id):
+            raise InvalidUserError("Invalid seller id")
         try:
             async with self._uow:
                 item = await self._uow.orders.get_ordered_item(order_id, product_id)
@@ -35,10 +46,10 @@ class SellerOrderService:
             raise DataAccessError("Data access error")
 
     async def accept_order(self, product_id: PositiveInt,
-                           order_id: PositiveInt) -> OrderItemWithOrderIdAndCreationDate:
+                           order_id: PositiveInt, seller: User) -> OrderItemWithOrderIdAndCreationDate:
         try:
             if await self.can_process_order(product_id, order_id):
-                order_item = await self.get_ordered_item(product_id, order_id)
+                order_item = await self.get_ordered_item(product_id, order_id, seller)
                 async with self._uow:
                     order_item.status = OrderItemStatus.ACCEPTED
                     order_item.check_date = datetime.now()
@@ -50,10 +61,11 @@ class SellerOrderService:
             raise DataAccessError("Data access error")
 
     async def decline_order(self, product_id: PositiveInt,
-                            order_id: PositiveInt, refuse_reason: str) -> OrderItemWithOrderIdAndCreationDate:
+                            order_id: PositiveInt,
+                            refuse_reason: str, seller: User) -> OrderItemWithOrderIdAndCreationDate:
         try:
             if await self.can_process_order(product_id, order_id):
-                order_item = await self.get_ordered_item(product_id, order_id)
+                order_item = await self.get_ordered_item(product_id, order_id, seller)
                 async with self._uow:
                     order_item.status = OrderItemStatus.DECLINED
                     order_item.check_date = datetime.now()
@@ -72,3 +84,13 @@ class SellerOrderService:
                 return item.can_be_processed()
         except DatabaseError:
             raise DataAccessError("Data access error")
+
+    async def product_belongs_to_seller(self, product_id: PositiveInt, seller_id: PositiveInt) -> bool:
+        try:
+            async with self._uow:
+                seller_id_in_db = await self._uow.orders.get_seller_id_for_product(product_id)
+                return seller_id == seller_id_in_db
+        except DatabaseError:
+            raise DataAccessError("Data access error")
+        except DoesNotExistError:
+            return False

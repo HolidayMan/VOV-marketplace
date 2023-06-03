@@ -18,7 +18,7 @@
               {% for order_item in order.order_items %}
                 <tr>
                   <td>
-                      <img src="{{ order_item.product.product_data.image_file_path|make_media }}" alt="Order item image">
+                      <img src="{{ order_item.product.product_data.image_file_path|make_media }}" width="300px" alt="Order item image">
                   </td>
                   <td>{{ order_item.product.product_data.name }}</td>
                   <td>{{ order_item.count }}</td>

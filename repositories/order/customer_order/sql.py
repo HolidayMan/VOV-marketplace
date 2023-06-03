@@ -25,3 +25,8 @@ JOIN product_data ON product.product_data_id = product_data.id
 JOIN order_item_status ON order_item.status_id = order_item_status.id
 WHERE order_item.order_id = %s;
 """
+
+UPDATE_ORDER_STATUS = """
+UPDATE `order` AS ord SET ord.status_id = (SELECT order_status.id FROM order_status WHERE order_status.name = %s)
+WHERE ord.id = %s;
+"""

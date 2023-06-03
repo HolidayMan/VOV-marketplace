@@ -49,6 +49,7 @@ async def my_products(request: Request, seller: UserInDB | None = Depends(get_cu
 @router.get('/my-products/{product_id}', name='my-product', dependencies=[Depends(require_auth),
                                                                           Depends(require_role(UserRole.SELLER))])
 async def my_product(request: Request, product_id: int, seller: UserInDB = Depends(get_current_user)):
+    # TODO: view refuse_reason if request was refused
     try:
         product, request_status = await products_management_service.get_product(product_id, seller)
     except NotOwnerError:
