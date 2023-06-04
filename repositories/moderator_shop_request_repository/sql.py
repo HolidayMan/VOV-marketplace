@@ -22,3 +22,17 @@ SET request_status_id = (SELECT request_status.id FROM request_status WHERE requ
     check_date = %s
 WHERE shop_data_id = %s;
 """
+
+APPROVE_SHOP_REQUEST = """
+UPDATE create_shop_request
+SET request_status_id = (SELECT id FROM request_status WHERE name = 'accepted'),
+    moderator_id =%s, check_date = %s 
+WHERE shop_data_id =%s;
+"""
+
+DECLINE_SHOP_REQUEST = """
+UPDATE create_shop_request
+SET request_status_id = (SELECT id FROM request_status WHERE name = 'declined'),
+    refuse_reason = %s, moderator_id =%s , check_date = %s
+WHERE shop_data_id =%s;
+"""

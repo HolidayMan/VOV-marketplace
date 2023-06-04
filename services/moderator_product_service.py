@@ -1,4 +1,3 @@
-from domain.request import ProductCreationRequest
 from domain.user import User
 from repositories.moderator_products.product_request_approval_repository import ProductCreationRequestWithoutUsers
 from services.uow.moderator_product import AsyncModeratorProductUnitOfWork

@@ -3,8 +3,6 @@ from fastapi import APIRouter, Form, Depends, Request
 from fastapi import status
 from starlette.responses import RedirectResponse, HTMLResponse
 
-from domain.shop import Shop
-from pydantic import PositiveInt
 
 from services.exceptions import DataAccessError, CannotCreateShopError
 from services.seller_shop_service import SellerShopService
@@ -55,8 +53,9 @@ async def load_shop_form(request: Request):
 
 @router.get("/loadShop", name="loadShop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
-async def load_created_shop(request: Request):
-    return render(request, "seller/load_shop.html", {})
+async def load_created_shop(request: Request, seller: User = Depends(get_user)):
+    shop = await service.get_shop_by_seller(seller)
+    return render(request, "seller/load_shop.html", {"shop": shop})
 
 
 # TODO you don`t have shop or all your shop request are declined
@@ -64,5 +63,5 @@ async def load_created_shop(request: Request):
 
 @router.get("/seller_already_has_shop", name="seller_already_has_shop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
-async def load_shop(request: Request, seller: User = Depends(get_user)):
+async def load_shop(request: Request):
     return render(request, "seller/seller_already_has_shop.html", {})

@@ -12,7 +12,7 @@ def map_row_to_shop(row) -> Shop:
     shop_data = ShopData(
         name=row['name'],
         description=row['description'],
-        approved=False  # ToDo check select
+        approved=row['approved']
     )
     shop = Shop(
         shop_data=shop_data
@@ -55,4 +55,3 @@ class MySQLAsyncShopRepository(AsyncShopRepository):
         async with self.session.cursor() as cursor:
             await cursor.execute(UPDATE_SHOP_DATA_ID, (shop_data_id, shop_id))
             await self.session.commit()
-

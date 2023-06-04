@@ -13,7 +13,7 @@ class AsyncShopRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_shop_by_seller(self, seller: User) -> Shop:
+    async def get_shop_by_seller(self, seller: User) -> Shop | None:
         pass
 
     @abstractmethod

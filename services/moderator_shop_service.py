@@ -3,8 +3,9 @@ from datetime import datetime
 from pydantic import PositiveInt
 from pymysql import DatabaseError
 
-from domain.request import RequestStatus
+from domain.user import User
 from repositories.exceptions import CannotProcessShopRequestError
+from repositories.order.exceptions import CannotProcessOrderItemError
 from repositories.seller_shop_request_repository.shop_creation_request import ShopCreationRequestInDB
 from services.exceptions import DataAccessError
 from services.uow.shop.shop_unit_of_work import AbstractShopUnitOfWork
@@ -36,33 +37,27 @@ class ModeratorShopService:
         except DatabaseError:
             raise DataAccessError("Data access error")
 
-    async def approve_shop_request(self, shop_data_id: PositiveInt) -> ShopCreationRequestInDB:
+    async def approve_shop_request(self, shop_data_id: PositiveInt, moderator: User) -> None:
         try:
-            if await self.shop_request_in_process(shop_data_id):
-                shop_request = await self.get_shop_request(shop_data_id)
-                async with self._moderator_shop_request_uow:
-                    shop_request.request_status = RequestStatus.ACCEPTED
-                    shop_request.check_date = datetime.now()
-                    await self._moderator_shop_request_uow.shop_request.update_shop_request_status(shop_request)
-                    await self._moderator_shop_request_uow.commit()
-                    return shop_request
-            raise CannotProcessShopRequestError("Cannot accept shop request cause its status is not IN_PROCESS")
+            if not await self.shop_request_in_process(shop_data_id):
+                raise CannotProcessOrderItemError("Cannot approve order item as its status is not IN_PROCESS")
+            async with self._moderator_shop_request_uow:
+                check_date = datetime.now()
+                await self._moderator_shop_request_uow.shop_request.approve_shop_request(
+                    shop_data_id, moderator, check_date)
+                await self._moderator_shop_request_uow.commit()
         except DatabaseError:
             raise DataAccessError("Data access error")
 
     async def decline_shop_request(self,
-                                   shop_data_id: PositiveInt, refuse_reason: str) -> ShopCreationRequestInDB:
+                                   shop_data_id: PositiveInt, refuse_reason: str, moderator: User) \
+            -> None:
         try:
-            if await self.shop_request_in_process(shop_data_id):
-                shop_request = await self.get_shop_request(shop_data_id)
-                async with self._moderator_shop_request_uow:
-                    shop_request.request_status = RequestStatus.DECLINED
-                    shop_request.check_date = datetime.now()
-                    shop_request.refuse_reason = refuse_reason
-                    await self._moderator_shop_request_uow.shop_request.update_shop_request_status(shop_request)
-                    await self._moderator_shop_request_uow.commit()
-                    return shop_request
-            raise CannotProcessShopRequestError("Cannot accept shop request cause its status is not IN_PROCESS")
+            async with self._moderator_shop_request_uow:
+                check_date = datetime.now()
+                await self._moderator_shop_request_uow.shop_request.decline_shop_request(
+                    shop_data_id, refuse_reason, moderator, check_date)
+                await self._moderator_shop_request_uow.commit()
         except DatabaseError:
             raise DataAccessError("Data access error")
 

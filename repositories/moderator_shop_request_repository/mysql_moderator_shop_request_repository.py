@@ -1,14 +1,17 @@
+from datetime import datetime
+
 from aiomysql import DictCursor
 from pydantic import PositiveInt
 
 from domain.request import RequestStatus
 from domain.shop import ShopData
 from domain.user import User
+from repositories.exceptions import DoesNotExistError
 from repositories.moderator_shop_request_repository.exceptions import ShopRequestDoesNotExistError
 from repositories.moderator_shop_request_repository.moderator_shop_request_repository import \
     AsyncModeratorShopRequestRepository
 from repositories.moderator_shop_request_repository.sql import GET_SHOP_REQUESTS_LIST, GET_SHOP_REQUEST, \
-    UPDATE_SHOP_REQUEST_STATUS_BY_SHOP_DATA_ID
+    APPROVE_SHOP_REQUEST, DECLINE_SHOP_REQUEST
 from repositories.seller_shop_request_repository.shop_creation_request import ShopCreationRequestInDB
 
 
@@ -58,12 +61,15 @@ class MYSQLAsyncModeratorShopRequestRepository(AsyncModeratorShopRequestReposito
             return shop_request
         raise ShopRequestDoesNotExistError("Shop request does not exist")
 
-    async def update_shop_request_status(self, shop_request: ShopCreationRequestInDB) -> ShopCreationRequestInDB:
+    async def decline_shop_request(self,  shop_data_id: PositiveInt, refuse_reason: str, moderator: User, check_date: datetime) -> None:
         await self.cursor.execute(
-            UPDATE_SHOP_REQUEST_STATUS_BY_SHOP_DATA_ID,
-            (shop_request.refuse_reason,
-             shop_request.request_status.name,
-             shop_request.check_date,
-             shop_request.shop_data.id)
+            DECLINE_SHOP_REQUEST,
+            (refuse_reason, moderator.id,  check_date, shop_data_id)
         )
-        return await self.get_shop_request(shop_request.shop_data.id)
+
+    async def approve_shop_request(self, shop_data_id: PositiveInt, moderator: User,
+                                   check_date: datetime) -> None:
+        await self.cursor.execute(
+            APPROVE_SHOP_REQUEST,
+            (moderator.id, check_date, shop_data_id)
+        )

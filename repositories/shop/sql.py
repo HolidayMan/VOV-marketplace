@@ -10,7 +10,7 @@ SELECT_GET_SHOP = """
     SELECT * FROM  shop_data;
 """
 SELECT_SHOP_BY_SELLER = """
-SELECT sd.name AS name, sd.description, sd.approved AS description
+SELECT sd.name AS name, sd.description, sd.approved
 FROM shop AS s
 JOIN shop_data AS sd ON s.shop_data_id = sd.id
 WHERE s.seller_id = %s;
