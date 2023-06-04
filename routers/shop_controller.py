@@ -1,21 +1,19 @@
 from typing import Annotated
 from fastapi import APIRouter, Form, Depends, Request
 from fastapi import status
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, HTMLResponse
 
-from domain.shop import Shop
-from pydantic import PositiveInt
 
 from services.exceptions import DataAccessError, CannotCreateShopError
-from services.shop_service import ShopService
+from services.seller_shop_service import SellerShopService
 from services.uow.shop.shop_unit_of_work import MySQLAsyncShopUnitOfWork
-from services.uow.shop_request.shop_request_unit_of_work import MySQLAsyncSellerShopRequestUnitOfWork
+from services.uow.shop_request.seller_shop_request_unit_of_work import MySQLAsyncSellerShopRequestUnitOfWork
 from utils.templates import render
 from dependencies.auth import get_user, require_auth, require_role
 from domain.user import User, UserRole
 
 router = APIRouter()
-service = ShopService(MySQLAsyncShopUnitOfWork(), MySQLAsyncSellerShopRequestUnitOfWork())
+service = SellerShopService(MySQLAsyncShopUnitOfWork(), MySQLAsyncSellerShopRequestUnitOfWork())
 
 
 @router.post("/createShop", name="createShop",
@@ -27,8 +25,14 @@ async def create_shop(request: Request, name: Annotated[str, Form()],
         if has_shop:
             return RedirectResponse(url=f"{router.url_path_for('seller_already_has_shop')}",
                                     status_code=status.HTTP_303_SEE_OTHER)
+        has_request_in_process = await service.has_request_in_process(seller)
+        if has_request_in_process:
+            return render(request, "seller/load_shop.html", {"request_in_process": has_request_in_process})
         else:
-            await service.create_shop(name, description, seller)
+            # Check if a record belongs to a user
+            created_shop = await service.create_shop(name, description, seller)
+            if created_shop.shop_data.id != seller.id:
+                return HTMLResponse(content="Access denied", status_code=status.HTTP_403_FORBIDDEN)
             return RedirectResponse(url=f"{router.url_path_for('loadShop')}",
                                     status_code=status.HTTP_303_SEE_OTHER)
     except DataAccessError:
@@ -53,7 +57,11 @@ async def load_shop_form(request: Request):
 @router.get("/loadShop", name="loadShop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
 async def load_created_shop(request: Request, seller: User = Depends(get_user)):
-    return render(request, "seller/load_shop.html", {})
+    has_request_in_process = await service.has_request_in_process(seller)
+    if has_request_in_process:
+        return render(request, "seller/load_shop.html", {"request_in_process": has_request_in_process})
+    shop = await service.get_shop_by_seller(seller)
+    return render(request, "seller/load_shop.html", {"shop": shop})
 
 
 # TODO you don`t have shop or all your shop request are declined
@@ -61,5 +69,5 @@ async def load_created_shop(request: Request, seller: User = Depends(get_user)):
 
 @router.get("/seller_already_has_shop", name="seller_already_has_shop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
-async def load_shop(request: Request, seller: User = Depends(get_user)):
+async def load_shop(request: Request):
     return render(request, "seller/seller_already_has_shop.html", {})

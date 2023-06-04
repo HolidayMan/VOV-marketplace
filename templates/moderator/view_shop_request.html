@@ -1,0 +1,37 @@
+{% extends 'moderator/base.html' %}
+{% block content %}
+    <div class="container">
+        {% if shop_request is defined %}
+            <h2>Shop request</h2>
+            <h3>Status name: {{shop_request.request_status.name }}</h3>
+            <h3>Refuse reason: {{shop_request.request_status.name}}</h3>
+            <h3>Creation date: {{shop_request.creation_date }}</h3>
+            <h3>Check date: {{ shop_request.check_date }}</h3>
+            <h3>Shop name:{{ shop_request.shop_data.name }}</h3>
+            <h3>Description:{{ shop_request.shop_data.description }}</h3>
+            <h3>Approved:{{ shop_request.shop_data.approved }}</h3>
+
+            {% if shop_request.request_in_process() %}
+                <form method="post" action="{{ url_for('approveShopRequest', shop_data_id=shop_request.shop_data.id) }}">
+                    <div class="form-group">
+                        <input type="hidden" id="shop_request_id" name="shop_request_id" value="{{shop_request.shop_data.id}}"/>
+                    </div>
+                    <button class="btn btn-success" type="submit">Approve</button>
+                </form>
+                <br>
+                <form method="post" action="{{ url_for('declineShopRequest', shop_data_id=shop_request.shop_data.id) }}">
+                    <div class="form-group">
+                        <input type="hidden" id="shop_data_id" name="shop_data_id" value="{{ shop_request.shop_data.id}}"/>
+                        <label for="refuse_reason">Refuse reason:</label>
+                        <textarea class="form-control" id="refuse_reason" name="refuse_reason"
+                                  placeholder="Write a refuse reason if you want to decline this shop"></textarea>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" type="submit">Decline</button>
+                </form>
+            {% else %}
+                <h3>Check date: {{ shop_request.check_date }}</h3>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

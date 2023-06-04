@@ -32,6 +32,3 @@ class ShopCreationRequest(BaseModel):
 
 class ProductCreationRequest(Request):
     product_data: ProductData
-
-    # delete in request id and create ShopCreationRequest in db
-    #TODO create normal base class!

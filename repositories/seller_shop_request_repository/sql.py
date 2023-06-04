@@ -15,3 +15,11 @@ JOIN request_status rs ON rs.id = create_shop_request.request_status_id
 WHERE seller_id = %s;
 """
 
+GET_SHOP_REQUESTS_IN_PROCESS = """
+SELECT shop_data_id, seller_id, rs.name AS status_name, refuse_reason, creation_date, check_date,
+       sd.name AS shop_name, description, approved
+FROM create_shop_request
+JOIN shop_data sd ON sd.id = create_shop_request.shop_data_id
+JOIN request_status rs ON rs.id = create_shop_request.request_status_id
+WHERE rs.name = 'in_process' AND seller_id=%s;
+"""

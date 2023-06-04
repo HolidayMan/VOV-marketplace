@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand navbar-light" style="background-color: darksalmon;">
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link navbar-brand" href="/loadShopForm" target="content">View Shop Request</a>
+            <a class="nav-link" href="{{ url_for('viewShopRequests') }}"  target="content">View All Shop Requests</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link navbar-brand" href="{{ url_for('product-requests-moderation') }}">View product requests</a>
+            <a class="nav-link" href="{{ url_for('product-requests-moderation') }}">View product requests</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for("logout") }}" target="content">Logout</a>

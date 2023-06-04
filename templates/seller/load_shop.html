@@ -1,15 +1,25 @@
 {% extends 'seller/base.html' %}
 {% block content %}
     <div class="container pt-5">
-    <h3>Shop Details</h3>
-    <div class="row gx-5">
-        <strong>Name:</strong>
-        <span>name </span>
-    </div>
-    <br>
-    <div class="row gx-5">
-        <strong>Description:</strong>
-        <p>description</p>
-    </div>
+        {% if request_in_process is defined and request_in_process %}
+            <h3>Your shop is in process. Wait please!))</h3>
+        {% elif shop is defined and shop.shop_data.approved %}
+            <h3>Shop Details</h3>
+            <div class="row gx-5">
+                <strong>Name:</strong>
+                <span>{{ shop.shop_data.name }} </span>
+            </div>
+            <h4>{{ shop.shop_data.approved }}</h4>
+            <br>
+            <div class="row gx-5">
+                <strong>Description:</strong>
+                <p>{{ shop.shop_data.description }}</p>
+            </div>
+        {% else %}
+            <h3>You don`t have approved shop</h3>
+            <button class="button-redirect mt-5">
+                <a href="{{ url_for('loadShopForm') }}"> Try again</a>
+            </button>
+        {% endif %}
     </div>
 {% endblock %}

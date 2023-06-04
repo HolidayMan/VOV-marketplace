@@ -1,0 +1,2 @@
+class ShopRequestDoesNotExistError(Exception):
+    pass

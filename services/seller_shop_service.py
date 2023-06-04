@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pymysql import ProgrammingError, IntegrityError
+from pymysql import ProgrammingError
 
 from domain.request import RequestStatus
 from domain.shop import Shop, ShopData
@@ -9,10 +9,10 @@ from repositories.seller_shop_request_repository.shop_creation_request import Sh
 
 from services.exceptions import DataAccessError, CannotCreateShopError
 from services.uow.shop.shop_unit_of_work import AbstractShopUnitOfWork
-from services.uow.shop_request.shop_request_unit_of_work import AbstractSellerShopRequestUnitOfWork
+from services.uow.shop_request.seller_shop_request_unit_of_work import AbstractSellerShopRequestUnitOfWork
 
 
-class ShopService:
+class SellerShopService:
     _shop_uow: AbstractShopUnitOfWork
     _shop_request_uow: AbstractSellerShopRequestUnitOfWork
 
@@ -74,5 +74,10 @@ class ShopService:
                     if request.request_status is not RequestStatus.DECLINED:
                         return False
 
-    async def create_shop_request(self, shop_data: ShopData):
-        pass
+    async def has_request_in_process(self, seller: User) -> bool:
+        async with self._shop_uow:
+            request_in_process = await self._shop_uow.shop.get_request_in_process(seller)
+            if request_in_process is None:
+                return False
+            return True
+

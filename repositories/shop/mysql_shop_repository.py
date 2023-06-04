@@ -1,7 +1,11 @@
 from db import AsyncSession
 from pydantic.types import PositiveInt
+
+from domain.request import RequestStatus
 from domain.shop import Shop, ShopData
 from domain.user import User
+from repositories.seller_shop_request_repository.shop_creation_request import ShopCreationRequestInDB
+from repositories.seller_shop_request_repository.sql import GET_SHOP_REQUESTS_IN_PROCESS
 from repositories.shop.shop_repository import AsyncShopRepository
 
 from repositories.shop.sql import INSERT_INTO_SHOP_DATA, INSERT_INTO_SHOP, SELECT_SHOP_BY_SELLER, UPDATE_SHOP_DATA_ID
@@ -12,7 +16,7 @@ def map_row_to_shop(row) -> Shop:
     shop_data = ShopData(
         name=row['name'],
         description=row['description'],
-        approved=False  # ToDo check select
+        approved=row['approved']
     )
     shop = Shop(
         shop_data=shop_data
@@ -56,3 +60,23 @@ class MySQLAsyncShopRepository(AsyncShopRepository):
             await cursor.execute(UPDATE_SHOP_DATA_ID, (shop_data_id, shop_id))
             await self.session.commit()
 
+    async def get_request_in_process(self, seller: User) -> ShopCreationRequestInDB | None:
+        async with self.session.cursor() as cursor:
+            await cursor.execute(GET_SHOP_REQUESTS_IN_PROCESS, seller.id)
+            row = await cursor.fetchone()
+            if row:
+                request_data = ShopCreationRequestInDB(
+                    seller_id=PositiveInt(row['seller_id']),
+                    request_status=RequestStatus(row['status_name']),
+                    refuse_reason=row['refuse_reason'],
+                    creation_date=row['creation_date'],
+                    check_date=row['check_date'],
+                    shop_data=ShopData(
+                        name=row['shop_name'],
+                        description=row['description'],
+                        approved=row['approved']
+                    )
+                )
+                return request_data
+            else:
+                return None
