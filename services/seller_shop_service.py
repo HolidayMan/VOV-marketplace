@@ -74,5 +74,10 @@ class SellerShopService:
                     if request.request_status is not RequestStatus.DECLINED:
                         return False
 
-    async def create_shop_request(self, shop_data: ShopData):
-        pass
+    async def has_request_in_process(self, seller: User) -> bool:
+        async with self._shop_uow:
+            request_in_process = await self._shop_uow.shop.get_request_in_process(seller)
+            if request_in_process is None:
+                return False
+            return True
+

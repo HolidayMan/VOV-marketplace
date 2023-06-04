@@ -4,6 +4,7 @@ from pydantic import PositiveInt
 
 from domain.shop import Shop
 from domain.user import User
+from repositories.seller_shop_request_repository.shop_creation_request import ShopCreationRequestInDB
 
 
 class AsyncShopRepository(ABC):
@@ -23,3 +24,8 @@ class AsyncShopRepository(ABC):
     @abstractmethod
     def create_shop_data(self, shop_data):
         pass
+
+    @abstractmethod
+    async def get_request_in_process(self, seller: User) -> ShopCreationRequestInDB | None:
+        pass
+

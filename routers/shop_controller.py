@@ -25,6 +25,9 @@ async def create_shop(request: Request, name: Annotated[str, Form()],
         if has_shop:
             return RedirectResponse(url=f"{router.url_path_for('seller_already_has_shop')}",
                                     status_code=status.HTTP_303_SEE_OTHER)
+        has_request_in_process = await service.has_request_in_process(seller)
+        if has_request_in_process:
+            return render(request, "seller/load_shop.html", {"request_in_process": has_request_in_process})
         else:
             # Check if a record belongs to a user
             created_shop = await service.create_shop(name, description, seller)
@@ -54,6 +57,9 @@ async def load_shop_form(request: Request):
 @router.get("/loadShop", name="loadShop",
             dependencies=[Depends(require_auth), Depends(require_role(UserRole.SELLER))])
 async def load_created_shop(request: Request, seller: User = Depends(get_user)):
+    has_request_in_process = await service.has_request_in_process(seller)
+    if has_request_in_process:
+        return render(request, "seller/load_shop.html", {"request_in_process": has_request_in_process})
     shop = await service.get_shop_by_seller(seller)
     return render(request, "seller/load_shop.html", {"shop": shop})
 
