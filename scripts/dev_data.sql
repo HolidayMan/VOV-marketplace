@@ -9,7 +9,11 @@ INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (12, '
 INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (13, 'Igor', 'igor@gmail.com', '$2b$12$EhazXNEnFyoZkVBNzJ6DOuXZzLLX.w3D/evACq8pNpoR4Utb2SmZG', 1);
 INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (14, 'Liza', 'lisa@gmail.com', '$2b$12$4FaXma42jwwzKl9lcgDb2uwNS7J7VrlSp7OWjgkVVYwHMp/sfJBaO', 1);
 INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (15, 'Anna', 'an@gmail.com', '$2b$12$Jp3P0NLRjzaeIHy3FZYlJ.DOjk3bzPqDXza.QO4CwlT7ODttFe7J6', 1);
-
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (2, 'Oleksiy', 'alex@gmail.com', '$2b$12$bhO5NUZHBuf6qPzQKRccwe6WAucbtneOZkhkFpwNaCQLkly9PyF1K', 2);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (4, 'Salamon', 'someone@gmail.com', '$2b$12$MS1bOJ06908gSz5x0XVuvucaoOG0j5grrJvAVgeT7GmFRDQSAixgy', 2);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (7, 'Riko', 'rik@gmail.com', '$2b$12$7Z9yk20JnsSQuZCthw8Cd.42y5JjY87q5eCkjDHH6adJ4A8MyCxoy', 2);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (3, 'Lera', 'lera@gmail.com', '$2b$12$bUk2O3T6C/N2xZfLeIIrRe00ZazogCuKdeWqjDN.ntXxcJDzSvdqe', 3);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (8, 'Greg', 'greg@gmail.com', '$2b$12$YeWzneYvXIhRgboOq.jIt.ayyX6LhXcB5JvK8wTKtLlrGZQN1jYmi', 3);
 
 # Adding shop data
 INSERT INTO vov_database.shop_data (name, description, id, approved) VALUES ('MegaShop', 'Selling mega products.', 1, 1);
