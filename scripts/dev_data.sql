@@ -1,12 +1,14 @@
 # Adding users
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (1, 'Vlad', 'vlad@gmail.com', '$2b$12$3DMcWqyvXTd2GUnJLa79Le379rKv2AKXfC7IOCYCOHMyEvK5WUwWu', 1);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (5, 'Nina', 'nino@gmail.com', '$2b$12$nZE/yezyHiU1vUhsJMUUqeeIvj0qnJChuMt6x2ia435e9fq18pdX6', 1);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (6, 'Alex', 'alex@gmail.com', '$2b$12$nahxh5vYC8I.tLuzql1OlOga1Cl5rsoTyjnTuD/a08o443iaeV3eS', 1);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (2, 'Oleksiy', 'alex@gmail.com', '$2b$12$3DMcWqyvXTd2GUnJLa79Le379rKv2AKXfC7IOCYCOHMyEvK5WUwWu', 2);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (4, 'Salamon', 'someone@gmail.com', '$2b$12$Y9o.zUIWKa4LLX.ZwV8XmuvyYDCK8bEd4vd.9xQjnTA7JoxblZsta', 2);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (7, 'Riko', 'rik@gmail.com', '$2b$12$4BCe962dVOoOEWbahzWxFOVgG7q80J8ftmFj3Kn7Tabg5UWieK3tS', 2);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (3, 'Lera', 'lera@gmail.com', '$2b$12$Bfso3NBwQ1Ygw8hBrUIwZel0H428ASTrns5bc.rv5Dd24LFNtNuiC', 3);
-INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (8, 'Greg', 'greg@gmail.com', '$2b$12$PZezeOOeTQ8E/DvNqtb9Kud0pLFuKl3sIxJAO6Dwa2Rp1jdElbFjW', 3);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (1, 'Vlad', 'vlad@gmail.com', '$2b$12$ow7f380oWsGMSkFnhsUCruRETvoXwtM.ccYn/LxMWymD.71tNhlKy', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (5, 'Nina', 'nino@gmail.com', '$2b$12$kV90KcUcv9kG87/3n0W/OeBXWYIFAt.JmVcd721kBiW70EcDsdqou', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (6, 'Alex', 'alex@gmail.com', '$2b$12$qWY.jvzuYa0N/TeC5tGSaOnZb.YJFij41o5iP53zifXNlcGSNhDSC', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (9, 'Nickolas', 'nick@gmail.com', '$2b$12$oaLnes2n3XWedYLXMQim2Orho1bvMzszZEIkitSI5naLn/3i1uz7e', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (10, 'Diana', 'dia@gmail.com', '$2b$12$YJO.At3oZ.gvK6uiMZ3Mm.zjb3uTdKfmBai24Zwvn1xXmSRv8av4G', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (11, 'Georigy', 'georg@gmail.com', '$2b$12$QLfnJJcTzOXjcfGS9/oXEu8LWfu6nKXZ0tC3sGHtjqtr6bpYnpaUi', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (12, 'Ivan', 'ivan@gmail.com', '$2b$12$L68s0AQHozpWbBmGhG5j9eVVr3QWu1G8R1ntwLrGz6hRZ91DYW6bS', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (13, 'Igor', 'igor@gmail.com', '$2b$12$EhazXNEnFyoZkVBNzJ6DOuXZzLLX.w3D/evACq8pNpoR4Utb2SmZG', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (14, 'Liza', 'lisa@gmail.com', '$2b$12$4FaXma42jwwzKl9lcgDb2uwNS7J7VrlSp7OWjgkVVYwHMp/sfJBaO', 1);
+INSERT INTO vov_database.user (id, name, email, password, role_id) VALUES (15, 'Anna', 'an@gmail.com', '$2b$12$Jp3P0NLRjzaeIHy3FZYlJ.DOjk3bzPqDXza.QO4CwlT7ODttFe7J6', 1);
 
 
 # Adding shop data
@@ -40,6 +42,12 @@ INSERT INTO vov_database.product_data (name, description, id, approved, image_fi
 INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Wooden chips', 'Good bedding for rodents.', 13, 1, 'products/7b1aaad8-e649-4b99-9636-dca8bd1fca9e.png');
 INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Drinker', 'Drinker for rodents.', 14, 1, 'products/b027baff-ff35-4c0d-87ba-bb6080f7a4e8.');
 INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Cage', 'Cage for small or medium rodents', 15, 1, 'products/3d7f6087-821b-413f-a2c5-75aa2981c530.png');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Flour', 'For better baking.', 16, 1, 'products/a9074714-3b80-4804-81f0-0b613be2bcfe.png');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Chocolate', 'Delicate milk chocolate.', 17, 1, 'products/432ec27b-7d2b-49f3-82de-d76c2461458e.png');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Hammer', 'For any nail.', 18, 1, 'products/93499a73-e064-4166-9a36-3805d42c1b67.jpg');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Pliers', 'These pliers are spring loaded and are also equipped with wire cutters and regular pliers for round-shape objects', 19, 1, 'products/c18bb2d1-0ec9-465c-a382-b233c75103ea.jpg');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Cat food', 'Balanced meal for your cat.', 20, 1, 'products/bacdc7c0-c340-4ad1-a351-73c0d8babdda.jpg');
+INSERT INTO vov_database.product_data (name, description, id, approved, image_file_path) VALUES ('Dog food', 'Balanced meal for your dog.', 21, 1, 'products/23233044-3c46-47e2-845a-710868f01f19.jpg');
 
 # Adding products
 INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (1, 1, 15.00, 2);
@@ -57,6 +65,12 @@ INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES 
 INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (13, 13, 50.00, 7);
 INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (14, 14, 87.00, 7);
 INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (15, 15, 600.00, 7);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (16, 16, 60.00, 2);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (17, 17, 55.00, 2);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (18, 18, 250.00, 4);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (19, 19, 225.00, 4);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (20, 20, 100.00, 7);
+INSERT INTO vov_database.product (product_data_id, id, price, seller_id) VALUES (21, 21, 125.00, 7);
 
 # Binding products to categories
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (3, 1);
@@ -65,30 +79,44 @@ INSERT INTO vov_database.product_category (product_id, category_id) VALUES (7, 1
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (8, 1);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (9, 1);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (10, 1);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (18, 1);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (19, 1);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (2, 2);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (4, 2);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (11, 2);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (12, 2);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (16, 2);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (17, 2);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (20, 2);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (21, 2);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (1, 3);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (5, 3);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (12, 3);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (13, 3);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (14, 3);
 INSERT INTO vov_database.product_category (product_id, category_id) VALUES (15, 3);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (20, 3);
+INSERT INTO vov_database.product_category (product_id, category_id) VALUES (21, 3);
 
 # Adding requests for products (already approved)
 INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 3, 1, 2, '2023-06-02 14:06:36', '2023-06-02 14:06:39');
 INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 3, 2, 2, '2023-06-02 14:06:57', '2023-06-02 14:06:59');
 INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 3, 3, 2, '2023-06-02 14:07:08', '2023-06-02 14:07:09');
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 4, 2, '2023-06-03 18:39:48', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 5, 2, '2023-06-03 18:43:19', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 6, 2, '2023-06-03 18:54:35', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 7, 2, '2023-06-03 18:56:37', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 8, 2, '2023-06-03 18:58:29', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 9, 2, '2023-06-03 19:01:15', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 10, 2, '2023-06-03 19:04:22', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 11, 2, '2023-06-03 19:38:52', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 12, 2, '2023-06-03 19:40:13', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 13, 2, '2023-06-03 19:42:20', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 14, 2, '2023-06-03 19:43:10', null);
-INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 15, 2, '2023-06-03 19:44:02', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 4, 2, '2023-06-03 18:39:48', '2023-06-04 10:29:06');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 5, 2, '2023-06-03 18:43:19', '2023-06-04 10:29:08');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 6, 2, '2023-06-03 18:54:35', '2023-06-04 10:29:09');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 7, 2, '2023-06-03 18:56:37', '2023-06-04 10:29:10');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 8, 2, '2023-06-03 18:58:29', '2023-06-04 10:29:11');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 9, 2, '2023-06-03 19:01:15', '2023-06-04 10:29:12');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 10, 2, '2023-06-03 19:04:22', '2023-06-04 10:29:13');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 11, 2, '2023-06-03 19:38:52', '2023-06-04 10:29:13');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 12, 2, '2023-06-03 19:40:13', '2023-06-04 10:29:14');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 13, 2, '2023-06-03 19:42:20', '2023-06-04 10:29:14');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 14, 2, '2023-06-03 19:43:10', '2023-06-04 10:29:14');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 15, 2, '2023-06-03 19:44:02', '2023-06-04 10:29:15');
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 16, 2, '2023-06-05 06:41:44', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (2, null, 8, 17, 2, '2023-06-05 06:46:03', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 18, 2, '2023-06-05 06:50:32', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (4, null, 8, 19, 2, '2023-06-05 06:52:38', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 20, 2, '2023-06-05 06:55:30', null);
+INSERT INTO vov_database.add_product_request (seller_id, refuse_reason, moderator_id, product_data_id, request_status_id, creation_date, check_date) VALUES (7, null, 8, 21, 2, '2023-06-05 06:55:55', null);
